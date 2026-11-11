@@ -330,14 +330,21 @@ class Robot:
         return "\n".join(lignes)
 
     def connexion(self):
-        msgs, dec = self.tg.nouveaux_messages(0)
+        import time
+        moi = self.tg.moi()
+        print("Bot Telegram : @%s (%s). J'attends un message pendant 4 minutes..." % (
+            moi.get("username"), moi.get("first_name")))
+        msgs, dec, fin = [], 0, time.time() + 240
+        while not msgs and time.time() < fin:
+            msgs, dec = self.tg.nouveaux_messages(dec, attente=25)
         if not msgs:
-            raise SystemExit("Aucun message reçu par le bot : écris-lui « salut » sur Telegram, puis relance.")
+            raise SystemExit("Aucun message reçu par @%s : écris-lui « salut » sur Telegram, puis relance."
+                             % moi.get("username"))
         self.config["chat_id"] = msgs[-1][0]
         self.etat["decalage_telegram"] = dec
         self.tg.chat_id = self.config["chat_id"]
         c = self.alpaca.compte()
-        nom = self.tg.moi().get("first_name", "bot")
+        nom = moi.get("first_name", "bot")
         self.dire("✅ <b>%s est connecté !</b>\nCompte Alpaca FICTIF %s : %s de capital, statut %s.\n\n"
                   "Le robot passera chaque jour de bourse vers 13h30-14h30 (ordres) et 22h30-23h30 (bilan), heure de Paris."
                   % (nom, c.get("account_number", "?"), dollars(float(c["equity"])), c.get("status")))

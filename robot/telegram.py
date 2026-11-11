@@ -16,7 +16,7 @@ class Telegram:
     def _appel(self, methode, params):
         url = "https://api.telegram.org/bot%s/%s" % (self.jeton, methode)
         req = urllib.request.Request(url, data=urllib.parse.urlencode(params).encode())
-        with urllib.request.urlopen(req, timeout=30) as r:
+        with urllib.request.urlopen(req, timeout=60) as r:
             rep = json.loads(r.read().decode())
         if not rep.get("ok"):
             raise RuntimeError("Telegram %s : %s" % (methode, rep.get("description")))
@@ -34,9 +34,9 @@ class Telegram:
             self._appel("sendMessage", {"chat_id": self.chat_id, "text": texte[i:i + 3900],
                                         "parse_mode": "HTML", "disable_web_page_preview": "true"})
 
-    def nouveaux_messages(self, decalage=0):
-        """Retourne (messages [(chat_id, texte)], nouveau décalage)."""
-        maj = self._appel("getUpdates", {"offset": decalage, "timeout": 0})
+    def nouveaux_messages(self, decalage=0, attente=0):
+        """Retourne (messages [(chat_id, texte)], nouveau décalage). attente : secondes d'écoute."""
+        maj = self._appel("getUpdates", {"offset": decalage, "timeout": attente})
         msgs, dernier = [], decalage
         for u in maj:
             dernier = max(dernier, u["update_id"] + 1)
