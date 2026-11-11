@@ -22,12 +22,20 @@ Il passe tout seul chaque jour de bourse, via GitHub Actions :
   exécutés à l'ouverture (15h30 à Paris en temps normal) ;
 - **le soir** (22h30-23h30 à Paris), il enregistre les exécutions et t'envoie le bilan sur Telegram.
 
-Trois poches d'environ un tiers du capital chacune : `cassure` (cassure courte, 50 grandes
-actions), `rebond` (rebond court, 50 grandes actions) et `tournant` (tournant du mois sur SPY).
+Capital : un compte fictif Alpaca de **1 000 $**, en fractions d'actions. Trois poches d'environ
+un tiers chacune : `cassure` (cassure courte, 50 grandes actions), `rebond` (rebond court,
+50 grandes actions) et `tournant` (tournant du mois sur SPY).
+
+Chaque trade a un **stop de sécurité** chez Alpaca (prix d'achat moins 3 x l'amplitude moyenne
+d'une journée, ATR 14), posé chaque matin à partir du lendemain de l'achat. Pas de take profit :
+testé sur 20 ans, il coupait les gagnants trop tôt. Chaque message d'achat donne le stop en $ et
+en %, la sortie prévue, et ce que ces trades ont donné de 2019 à 2026 (`robot/statistiques.json`,
+recalculé par `python -m lab.stats_robot`).
 Réglages : [`robot/config.json`](robot/config.json). Trades fermés : `robot/journal.csv`.
 
 **Garde-fous** : compte fictif uniquement (l'adresse du compte réel est refusée dans le code),
-aucun ordre au-dessus de 15 000 $, pause automatique et vente de tout si le capital perd 15 %
+refus de trader si le compte relié dépasse 10 000 $ (mauvais compte), aucun ordre au-dessus
+de 15 000 $, jamais d'achat et de vente le même jour, pause automatique et vente de tout si le capital perd 15 %
 depuis le départ, aucun ordre si le passage du matin arrive après l'ouverture.
 
 **Commandes Telegram** (lues au passage suivant) : `/etat`, `/stop`, `/reprendre`, `/aide`.
