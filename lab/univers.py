@@ -40,6 +40,36 @@ def _sp500():
 
 SP500 = _sp500()
 
+NOMS_ETF = {
+    "SPY": "fonds S&P 500 : les 500 plus grandes entreprises US",
+    "IBM": "International Business Machines",
+    "QQQ": "Invesco QQQ (Nasdaq 100)", "DIA": "SPDR Dow Jones Industrial Average ETF",
+    "IWM": "iShares Russell 2000 (petites entreprises US)", "XLB": "ETF secteur Matériaux",
+    "XLE": "ETF secteur Énergie", "XLF": "ETF secteur Finance", "XLI": "ETF secteur Industrie",
+    "XLK": "ETF secteur Technologie", "XLP": "ETF secteur Consommation de base", "XLU": "ETF secteur Services publics",
+    "XLV": "ETF secteur Santé", "XLY": "ETF secteur Consommation discrétionnaire",
+    "EFA": "iShares MSCI EAFE (pays développés hors US)", "EEM": "iShares MSCI Emerging Markets (pays émergents)",
+    "TLT": "iShares 20+ Year Treasury Bond (obligations US)", "GLD": "SPDR Gold Shares (or)",
+}
+
+
+def _noms():
+    import csv
+    import os
+    chemin = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sp500.csv")
+    with open(chemin, encoding="utf-8") as fh:
+        noms = {r["symbole"]: r["nom"] for r in csv.DictReader(fh)}
+    noms.update(NOMS_ETF)
+    return noms
+
+
+NOMS = _noms()
+
+
+def nom(symbole):
+    """« AAPL » -> « Apple Inc. » (ou le symbole lui-même s'il est inconnu)."""
+    return NOMS.get(symbole, symbole)
+
 UNIVERS = {"etf": ETF, "actions": GRANDES_ACTIONS, "sp500": SP500}
 
 

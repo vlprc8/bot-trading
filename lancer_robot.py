@@ -25,6 +25,7 @@ import traceback
 
 import pandas as pd
 
+from lab.univers import nom as nom_entreprise
 from robot import decisions
 from robot.alpaca import Alpaca
 from robot.telegram import Telegram
@@ -84,6 +85,12 @@ def dollars(x, signe=False):
 
 def qte_txt(q):
     return ("%.4f" % q).rstrip("0").rstrip(".").replace(".", ",")
+
+
+def titre(symbole):
+    """« AAPL (Apple Inc.) »"""
+    n = nom_entreprise(symbole)
+    return symbole if n == symbole else "%s (%s)" % (symbole, n)
 
 
 def pct(x):
@@ -276,7 +283,7 @@ class Robot:
                     self.etat["positions"].append({"poche": o["poche"], "symbole": o["symbole"], "qte": rempli,
                                                    "date_entree": quand, "prix_entree": prix, "stop": stop})
                     ligne = "✅ <b>Achat exécuté</b> [%s] %s %s à %s (%s)" % (
-                        o["poche"], qte_txt(rempli), o["symbole"], dollars(prix), dollars(rempli * prix))
+                        o["poche"], qte_txt(rempli), titre(o["symbole"]), dollars(prix), dollars(rempli * prix))
                     if stop:
                         ligne += "\n   🛑 Stop de sécurité %s (%s, soit %s au pire au prix du stop)" % (
                             dollars(stop), pct(stop / prix - 1), dollars((stop - prix) * rempli, True))
@@ -308,7 +315,7 @@ class Robot:
         if pos["qte"] <= 1e-6:
             self.etat["positions"].remove(pos)
         self.dire("%s <b>Vente exécutée</b> [%s] %s %s à %s : %s (%s), %s" % (
-            "🟢" if pnl >= 0 else "🔴", o["poche"], qte_txt(qte), o["symbole"], dollars(prix),
+            "🟢" if pnl >= 0 else "🔴", o["poche"], qte_txt(qte), titre(o["symbole"]), dollars(prix),
             dollars(pnl, True), pct(r), raison))
 
     def envoyer_ordre(self, poche, symbole, cote, raison, jour, genre, qte=None, montant=None, stop=None, atr=None):
@@ -346,7 +353,7 @@ class Robot:
     def texte_achat(self, poche, symbole, montant, prix, atr, stats_de=None, sortie=None):
         strat = decisions.STRATEGIES[poche["strategie"]]
         lignes = ["🟢 [%s] <b>Acheter %s de %s</b> (≈ %s action à ~%s)" % (
-            poche["nom"], dollars(montant), symbole, qte_txt(montant / prix), dollars(prix))]
+            poche["nom"], dollars(montant), titre(symbole), qte_txt(montant / prix), dollars(prix))]
         stop = decisions.stop_securite(prix, atr, poche, self.config)
         if stop:
             lignes.append("   🛑 Stop de sécurité ~%s : %s, soit %s au pire au prix du stop" % (
@@ -409,7 +416,7 @@ class Robot:
         for p in [p for p in self.etat["positions"] if p["poche"] == "test"]:
             self.envoyer_ordre("test", p["symbole"], "sell", "fin du test", jour, "vente", qte=p["qte"])
             vendus.add(("test", p["symbole"]))
-            ventes_txt.append("🔵 [test] <b>Vendre %s %s</b> : fin du test" % (qte_txt(p["qte"]), p["symbole"]))
+            ventes_txt.append("🔵 [test] <b>Vendre %s %s</b> : fin du test" % (qte_txt(p["qte"]), titre(p["symbole"])))
         en_cours = {p["symbole"] for p in self.etat["propositions"] if p["statut"] in ("en_attente", "acceptee")
                     and p["jour"] == str(jour)}
         for poche in self.config["poches"]:
@@ -421,7 +428,7 @@ class Robot:
             for p, raison in ventes:
                 self.envoyer_ordre(poche["nom"], p["symbole"], "sell", raison, jour, "vente", qte=p["qte"])
                 vendus.add((poche["nom"], p["symbole"]))
-                ventes_txt.append("🔵 [%s] <b>Vendre %s %s</b> : %s" % (poche["nom"], qte_txt(p["qte"]), p["symbole"], raison))
+                ventes_txt.append("🔵 [%s] <b>Vendre %s %s</b> : %s" % (poche["nom"], qte_txt(p["qte"]), titre(p["symbole"]), raison))
             for s_, montant, prix, raison, atr in achats:
                 achats_prevus.append((poche, s_, montant, prix, raison, atr))
         cash = float(compte["cash"]) * 0.98
@@ -513,7 +520,7 @@ class Robot:
                 a = pos.get(p["symbole"])
                 prix = float(a["current_price"]) if a else p["prix_entree"]
                 lignes.append("• [%s] %s %s, entrée %s le %s, %s (%s)%s" % (
-                    p["poche"], qte_txt(p["qte"]), p["symbole"], dollars(p["prix_entree"]), p["date_entree"],
+                    p["poche"], qte_txt(p["qte"]), titre(p["symbole"]), dollars(p["prix_entree"]), p["date_entree"],
                     pct(prix / p["prix_entree"] - 1), dollars((prix - p["prix_entree"]) * p["qte"], True),
                     (", stop %s" % dollars(p["stop"])) if p.get("stop") else ""))
         else:
