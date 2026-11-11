@@ -67,6 +67,47 @@ class Execution(unittest.TestCase):
         self.assertTrue((res["exposition"] >= 0).all())
 
 
+class StopEtObjectif(unittest.TestCase):
+    def donnees(self, ouv, haut, bas, clo):
+        idx = pd.bdate_range("2010-01-04", periods=len(ouv))
+        return {"A": pd.DataFrame({"open": ouv, "high": haut, "low": bas, "close": clo, "volume": 1e6}, index=idx)}
+
+    def lancer(self, data, **kw):
+        # ATR des 14 premiers jours = 2 (haut - bas = 2 chaque jour)
+        return moteur.backtest(data, SignalFixe(15, jours_max=10), capital=1000, max_positions=1, frais=0.0,
+                               debut="2000-01-01", fractions=True, sl_atr=1, tp_atr=2, **kw)["trades"].iloc[0]
+
+    def base(self):
+        n = 30
+        return [100.0] * n, [101.0] * n, [99.0] * n, [100.0] * n
+
+    def test_stop_touche_dans_la_journee(self):
+        o, h, l, c = self.base()
+        l[18] = 97.5                         # achat jour 16 à 100, stop 100 - 1 x 2 = 98
+        t = self.lancer(self.donnees(o, h, l, c))
+        self.assertEqual((t["prix_sortie"], t["motif"], t["jours"]), (98.0, "stop loss", 2))
+        self.assertAlmostEqual(t["qte"], 10.0)   # 1 000 $ / 100 $ : fractions autorisées
+
+    def test_ouverture_sous_le_stop(self):
+        o, h, l, c = self.base()
+        o[18], l[18] = 95.0, 94.0
+        t = self.lancer(self.donnees(o, h, l, c))
+        self.assertEqual((t["prix_sortie"], t["motif"]), (95.0, "stop loss (ouverture)"))
+
+    def test_objectif_touche(self):
+        o, h, l, c = self.base()
+        h[17] = 104.5                        # objectif 100 + 2 x 2 = 104
+        t = self.lancer(self.donnees(o, h, l, c))
+        self.assertEqual((t["prix_sortie"], t["motif"]), (104.0, "take profit"))
+
+    def test_rien_le_jour_de_l_achat_et_stop_avant_objectif(self):
+        o, h, l, c = self.base()
+        l[16], h[16] = 90.0, 110.0           # jour de l'achat : ignoré
+        l[17], h[17] = 97.0, 105.0           # les deux le même jour : on compte le stop
+        t = self.lancer(self.donnees(o, h, l, c))
+        self.assertEqual((t["sortie"], t["motif"]), (pd.bdate_range("2010-01-04", periods=30)[17], "stop loss"))
+
+
 class PasDeFutur(unittest.TestCase):
     def test_couper_les_donnees_ne_change_rien_au_passe(self):
         data = donnees.synthetiques(["A", "B", "C", "D"], debut="2005-01-03", fin="2014-12-31")

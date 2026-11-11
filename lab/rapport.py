@@ -81,8 +81,8 @@ def ecrire(lignes, courbes, config, lignes_stress=None, synthetique=False, dossi
     ax.set_yscale("log")
     ax.axvline(np.datetime64("2019-01-01"), color="grey", linestyle="--", linewidth=1)
     ax.text(np.datetime64("2019-02-01"), ax.get_ylim()[0] * 1.05, "vérification", color="grey")
-    ax.set_title("Capital de 100 000 $ (échelle log), frais %.2f %% par côté : référence et 5 meilleures"
-                 % (100 * config["frais"]))
+    ax.set_title("Capital de départ %s $ (échelle log), frais %.2f %% par côté : référence et 5 meilleures"
+                 % ("{:,.0f}".format(config.get("capital", 100000)).replace(",", " "), 100 * config["frais"]))
     ax.legend(fontsize=8, loc="upper left")
     ax.grid(alpha=0.3)
     fig.tight_layout()
@@ -96,10 +96,16 @@ def ecrire(lignes, courbes, config, lignes_stress=None, synthetique=False, dossi
              "**DONNÉES SYNTHÉTIQUES : test du moteur uniquement, aucune conclusion possible.**"
              if synthetique else "Données : Yahoo Finance, cours journaliers ajustés."))
     L.append("")
-    L.append("Règles de simulation : décision le soir à la clôture, ordre à l'ouverture du lendemain, "
-             "%d positions au plus (environ 1/%d du capital chacune), frais %.2f %% par achat et par vente, "
-             "actions entières, pas de levier." % (config["max_positions"], config["max_positions"],
-                                                   100 * config["frais"]))
+    L.append("Règles de simulation : capital de départ %s $, décision le soir à la clôture, ordre à "
+             "l'ouverture du lendemain, %d positions au plus (environ 1/%d du capital chacune), frais %.2f %% "
+             "par achat et par vente, fractions d'actions, pas de levier." % (
+                 "{:,.0f}".format(config.get("capital", 100000)).replace(",", " "), config["max_positions"],
+                 config["max_positions"], 100 * config["frais"]))
+    if config.get("sl"):
+        L.append("")
+        L.append("Variantes « + SL/TP » : stop loss à %g x ATR(14) sous le prix d'achat, take profit à %g x ATR(14) "
+                 "au-dessus, actifs dès le lendemain de l'achat ; les sorties de la stratégie restent en place."
+                 % (config["sl"], config["tp"]))
     L.append("")
     L.append("![courbes](courbes.png)")
     L.append("")

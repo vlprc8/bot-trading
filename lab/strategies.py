@@ -16,6 +16,13 @@ def sma(s, n):
     return s.rolling(n, min_periods=n).mean()
 
 
+def atr(df, n=14):
+    """Average True Range : l'amplitude moyenne d'une journée, en dollars (moyenne simple)."""
+    c_prec = df["close"].shift(1)
+    tr = pd.concat([df["high"] - df["low"], (df["high"] - c_prec).abs(), (df["low"] - c_prec).abs()], axis=1).max(axis=1)
+    return tr.rolling(n, min_periods=n).mean()
+
+
 def rsi(close, n):
     """RSI de Wilder."""
     delta = close.diff()

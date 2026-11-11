@@ -20,6 +20,9 @@ def main(argv=None):
     ap.add_argument("--synthetique", action="store_true", help="données inventées (test du code)")
     ap.add_argument("--frais", type=float, default=0.001, help="frais par côté (0.001 = 0,10 %%)")
     ap.add_argument("--positions", type=int, default=5, help="positions simultanées au maximum")
+    ap.add_argument("--capital", type=float, default=1000.0, help="capital de départ en dollars")
+    ap.add_argument("--sl", type=float, default=2.0, help="stop loss en multiples d'ATR (variante SL/TP)")
+    ap.add_argument("--tp", type=float, default=3.0, help="take profit en multiples d'ATR (variante SL/TP)")
     a = ap.parse_args(argv)
 
     symboles = univers.tous_les_symboles()
@@ -35,24 +38,27 @@ def main(argv=None):
         print("Pas de données pour %s : lance d'abord avec --telecharger." % univers.REFERENCE)
         return 1
 
-    reference = moteur.acheter_et_garder(data[univers.REFERENCE], frais=a.frais)
+    reference = moteur.acheter_et_garder(data[univers.REFERENCE], capital=a.capital, frais=a.frais, fractions=True)
     resultats, stress = {}, {}
+    variantes = [("", None, None), (" + SL/TP", a.sl, a.tp)]
     for strat in strategies.TOUTES:
         for nom_u, liste in (strat.univers_fixe or univers.UNIVERS).items():
             sous = {s: data[s] for s in liste if s in data}
             pos = strat.max_positions or a.positions
-            nom = "%s / %s" % (strat.nom, nom_u)
-            print("Backtest %-30s sur %d valeurs..." % (nom, len(sous)))
-            resultats[nom] = moteur.backtest(sous, strat, max_positions=pos, frais=a.frais)
-            stress[nom] = moteur.backtest(sous, strat, max_positions=pos, frais=2 * a.frais)
+            for suffixe, sl, tp in variantes:
+                nom = "%s / %s%s" % (strat.nom, nom_u, suffixe)
+                print("Backtest %-38s sur %d valeurs..." % (nom, len(sous)))
+                reglages = dict(capital=a.capital, max_positions=pos, fractions=True, sl_atr=sl, tp_atr=tp)
+                resultats[nom] = moteur.backtest(sous, strat, frais=a.frais, **reglages)
+                stress[nom] = moteur.backtest(sous, strat, frais=2 * a.frais, **reglages)
 
     lignes = stats.tableau(resultats, reference)
-    ref_stress = moteur.acheter_et_garder(data[univers.REFERENCE], frais=2 * a.frais)
+    ref_stress = moteur.acheter_et_garder(data[univers.REFERENCE], capital=a.capital, frais=2 * a.frais, fractions=True)
     lignes_stress = stats.tableau(stress, ref_stress)
     courbes = {"REFERENCE SPY": reference}
     courbes.update({n: r["equity"] for n, r in resultats.items()})
     descriptions = {s.nom: s.description for s in strategies.TOUTES}
-    chemin = rapport.ecrire(lignes, courbes, descriptions=descriptions, config={"frais": a.frais, "max_positions": a.positions},
+    chemin = rapport.ecrire(lignes, courbes, descriptions=descriptions, config={"frais": a.frais, "max_positions": a.positions, "capital": a.capital, "sl": a.sl, "tp": a.tp},
                             lignes_stress=lignes_stress, synthetique=a.synthetique)
 
     print("\nPériode de vérification (2019 à aujourd'hui) :")
