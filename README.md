@@ -15,6 +15,24 @@ sur un compte **fictif** Alpaca, avec des notifications Telegram. Aucun argent r
 | 5 | Le bot en compte fictif : ordres auto, Telegram, garde-fous | à faire |
 | 6 | 2 à 3 mois de simulation, bilan mensuel | à faire |
 
+## Le robot (compte fictif Alpaca)
+
+Il passe tout seul chaque jour de bourse, via GitHub Actions :
+- **le matin** (13h30-14h30 à Paris), il décide sur les cours de la veille et envoie les ordres,
+  exécutés à l'ouverture (15h30 à Paris en temps normal) ;
+- **le soir** (22h30-23h30 à Paris), il enregistre les exécutions et t'envoie le bilan sur Telegram.
+
+Trois poches d'environ un tiers du capital chacune : `cassure` (cassure courte, 50 grandes
+actions), `rebond` (rebond court, 50 grandes actions) et `tournant` (tournant du mois sur SPY).
+Réglages : [`robot/config.json`](robot/config.json). Trades fermés : `robot/journal.csv`.
+
+**Garde-fous** : compte fictif uniquement (l'adresse du compte réel est refusée dans le code),
+aucun ordre au-dessus de 15 000 $, pause automatique et vente de tout si le capital perd 15 %
+depuis le départ, aucun ordre si le passage du matin arrive après l'ouverture.
+
+**Commandes Telegram** (lues au passage suivant) : `/etat`, `/stop`, `/reprendre`, `/aide`.
+**Urgence** depuis GitHub (même sur téléphone) : Actions > Robot > Run workflow > `stop`.
+
 ## Lancer le backtest
 
 Dans GitHub : onglet **Actions** > **Backtest** > **Run workflow**. Environ 5 minutes.

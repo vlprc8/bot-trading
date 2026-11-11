@@ -1,0 +1,13 @@
+{
+  "chat_id": null,
+  "poches": [
+    {"nom": "cassure", "strategie": "cassure_courte", "univers": "actions", "part": 0.34, "max_positions": 5},
+    {"nom": "rebond", "strategie": "rebond_court", "univers": "actions", "part": 0.33, "max_positions": 5},
+    {"nom": "tournant", "strategie": "tournant_du_mois", "symboles": ["SPY"], "part": 0.33, "max_positions": 1}
+  ],
+  "garde_fous": {
+    "perte_max_totale_pct": 15,
+    "ordre_max_usd": 15000,
+    "compte_fictif_uniquement": true
+  }
+}
