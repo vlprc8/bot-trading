@@ -5,5 +5,21 @@
   "positions": [],
   "ordres": [],
   "dernier_matin": null,
-  "dernier_soir": null
+  "dernier_soir": null,
+  "propositions": [
+    {
+      "id": "1111-1",
+      "jour": "2026-11-11",
+      "poche": "test",
+      "symbole": "AAPL",
+      "montant": 5.0,
+      "prix": 354.7550048828125,
+      "atr": 9.526432582310267,
+      "raison": "test des boutons Oui / Non",
+      "statut": "en_attente",
+      "texte": "🟢 [test] <b>Acheter 5,00 $ de AAPL</b> (≈ 0,0141 action à ~354,76 $)\n   🛑 Stop de sécurité ~326,18 $ : -8,05 %, soit -0,40 $ au pire au prix du stop\n   🚪 Sortie prévue : revendu automatiquement demain matin (c'est un test)\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +0,27 $), quand ça perd -3,22 % (≈ -0,16 $) ; durée moyenne 6,8 jours\n\n<b>C'est un TEST</b> : appuie sur Oui pour voir l'ordre arriver dans Alpaca.",
+      "message_id": 9,
+      "test": true
+    }
+  ]
 }
