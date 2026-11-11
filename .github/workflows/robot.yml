@@ -2,16 +2,19 @@ name: Robot
 
 on:
   schedule:
-    - cron: "30 12 * * 1-5"   # matin : 13h30 Paris en hiver, 14h30 en été (avant l'ouverture de New York)
-    - cron: "0 13 * * 1-5"    # matin, passage de secours si le premier a été retardé
-    - cron: "30 21 * * 1-5"   # soir : après la clôture de New York
+    - cron: "0 7 * * 1-5"       # matin : 8h Paris en hiver, 9h en été -> propositions d'achat
+    - cron: "*/10 7-14 * * 1-5" # toutes les 10 min jusqu'à l'ouverture -> lit tes Oui / Non
+    - cron: "30 21 * * 1-5"     # soir : après la clôture de New York -> bilan
   workflow_dispatch:
     inputs:
       mode:
         description: "Que faire ?"
         type: choice
-        options: [etat, connexion, matin, soir, stop]
+        options: [etat, exemple, validation, connexion, matin, soir, stop]
         default: etat
+      attente:
+        description: "validation : écouter Telegram pendant N secondes"
+        default: "0"
 
 concurrency:
   group: robot
@@ -41,8 +44,10 @@ jobs:
             echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "30 21 * * 1-5" ]; then
             echo "mode=soir" >> "$GITHUB_OUTPUT"
-          else
+          elif [ "${{ github.event.schedule }}" = "0 7 * * 1-5" ]; then
             echo "mode=matin" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=validation" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Lancer le robot (${{ steps.mode.outputs.mode }})
@@ -50,7 +55,7 @@ jobs:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        run: python lancer_robot.py "${{ steps.mode.outputs.mode }}"
+        run: python lancer_robot.py "${{ steps.mode.outputs.mode }}" --attente "${{ inputs.attente || 0 }}"
 
       - name: Enregistrer l'état du robot
         if: always()

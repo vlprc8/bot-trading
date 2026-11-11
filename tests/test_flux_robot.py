@@ -60,14 +60,30 @@ class FauxAlpaca:
 
 class FauxTelegram:
     def __init__(self):
-        self.envoyes = []
+        self.envoyes, self.boutons, self.modifs, self.reponses, self.file = [], {}, {}, [], []
         self.chat_id = 42
+        self.compteur = itertools.count(100)
 
-    def envoyer(self, texte):
+    def envoyer(self, texte, boutons=None):
+        i = next(self.compteur)
         self.envoyes.append(texte)
+        if boutons:
+            self.boutons[i] = boutons
+        return i
 
-    def nouveaux_messages(self, decalage=0, attente=0):
-        return [], decalage
+    def modifier(self, message_id, texte):
+        self.modifs[message_id] = texte
+
+    def repondre_bouton(self, callback, texte):
+        self.reponses.append(texte)
+
+    def appuyer(self, message_id, choix):
+        donnee = dict((b[0][2:], b[1]) for b in self.boutons[message_id])[choix]
+        self.file.append({"type": "bouton", "chat": 42, "donnee": donnee, "callback": "c", "message": message_id})
+
+    def evenements(self, decalage=0, attente=0):
+        evts, self.file = self.file, []
+        return evts, decalage + len(evts)
 
 
 class Flux(unittest.TestCase):
@@ -77,6 +93,7 @@ class Flux(unittest.TestCase):
         config = json.load(open(self.anciens["CONFIG"], encoding="utf-8"))
         config["poches"] = [p for p in config["poches"] if p["nom"] == "tournant"]
         config["poches"][0]["part"] = 1.0
+        config["chat_id"] = 42
         lancer_robot.CONFIG = os.path.join(self.tmp, "config.json")
         lancer_robot.ETAT = os.path.join(self.tmp, "etat.json")
         lancer_robot.JOURNAL = os.path.join(self.tmp, "journal.csv")
@@ -95,19 +112,55 @@ class Flux(unittest.TestCase):
         self.alpaca.maintenant = maintenant
         r = lancer_robot.Robot()
         getattr(r, mode)()
+        r.envoyer()          # même ordre que lancer_robot.main : envoyer, puis sauver
         r.sauver()
-        r.envoyer()
         return r
 
+    def proposition_du_matin(self):
+        # 29/06/2026 = avant-dernière séance de juin : la poche « tournant » PROPOSE d'acheter SPY
+        self.passage("matin", "2026-06-29T03:00:00-04:00")
+        self.assertEqual(self.alpaca.ordres, {})              # rien ne part sans ton Oui
+        msg_id = max(self.tg.boutons)
+        msg = self.tg.envoyes[-1]
+        for attendu in ("Acheter 980,00 $ de SPY", "Stop de sécurité", "Sortie prévue", "Historique 2019-2026",
+                        "Je passe cet achat ?"):
+            self.assertIn(attendu, msg)
+        self.assertIn("1 proposition(s) d'achat", self.tg.envoyes[-2])
+        return msg_id
+
+    def test_non_ne_passe_aucun_ordre(self):
+        msg_id = self.proposition_du_matin()
+        self.tg.appuyer(msg_id, "Non")
+        self.passage("validation", "2026-06-29T04:00:00-04:00")
+        self.assertEqual(self.alpaca.ordres, {})
+        self.assertIn("Refusé", self.tg.modifs[msg_id])
+
+    def test_sans_reponse_la_proposition_expire_a_l_ouverture(self):
+        msg_id = self.proposition_du_matin()
+        self.alpaca.ouvert = True
+        self.passage("validation", "2026-06-29T09:40:00-04:00")
+        self.assertEqual(self.alpaca.ordres, {})
+        self.assertIn("Expirée", self.tg.modifs[msg_id])
+
+    def test_exemple_a_5_dollars(self):
+        self.alpaca.ouvert = True
+        self.passage("exemple", "2026-06-29T10:00:00-04:00")
+        msg_id = max(self.tg.boutons)
+        self.assertIn("TEST", self.tg.envoyes[-1])
+        self.tg.appuyer(msg_id, "Oui")
+        self.passage("validation", "2026-06-29T10:05:00-04:00")
+        self.assertEqual([o["montant"] for o in self.alpaca.ordres.values()], [5.0])
+        self.assertIn("exécution immédiate", self.tg.modifs[msg_id])
+
     def test_achat_stop_puis_stop_touche(self):
-        # 29/06/2026 = avant-dernière séance de juin : la poche « tournant » achète SPY pour 1 000 $
-        self.passage("matin", "2026-06-29T08:00:00-04:00")
+        msg_id = self.proposition_du_matin()
+        self.tg.appuyer(msg_id, "Oui")
+        self.passage("validation", "2026-06-29T04:00:00-04:00")
         achat = [o for o in self.alpaca.ordres.values() if o["cote"] == "buy"]
         self.assertEqual(len(achat), 1)
         self.assertAlmostEqual(achat[0]["montant"], 980.0)     # 98 % du cash : marge pour les frais
-        msg = self.tg.envoyes[-1]
-        for attendu in ("Acheter 980,00 $ de SPY", "Stop de sécurité", "Sortie prévue", "Historique 2019-2026"):
-            self.assertIn(attendu, msg)
+        self.assertIn("Accepté", self.tg.modifs[msg_id])
+        self.assertIn("Ordre envoyé", self.tg.reponses[-1])
 
         self.alpaca.remplir("o1", 100.0, "2026-06-29T09:30:05-04:00")
         self.passage("soir", "2026-06-29T17:30:00-04:00")
@@ -118,7 +171,7 @@ class Flux(unittest.TestCase):
         self.assertIn("Achat exécuté", self.tg.envoyes[-1])
 
         # le lendemain matin : un ordre stop de sécurité est posé pour la journée
-        self.passage("matin", "2026-06-30T08:00:00-04:00")
+        self.passage("matin", "2026-06-30T03:00:00-04:00")
         stops = [(i, o) for i, o in self.alpaca.ordres.items() if o["stop"]]
         self.assertEqual(len(stops), 1)
         self.assertAlmostEqual(stops[0][1]["qte"], 9.8)
@@ -133,7 +186,7 @@ class Flux(unittest.TestCase):
 
     def test_refuse_le_compte_a_100000(self):
         self.alpaca.equity = 100000.0
-        self.passage("matin", "2026-06-29T08:00:00-04:00")
+        self.passage("matin", "2026-06-29T03:00:00-04:00")
         self.assertEqual(self.alpaca.ordres, {})
         self.assertIn("pas le compte à 1 000 $", self.tg.envoyes[-1])
 
