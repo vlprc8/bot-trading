@@ -119,6 +119,7 @@ class Robot:
 
     def envoyer(self):
         if self.messages:
+            print("--- message Telegram ---\n" + "\n\n".join(self.messages))
             self.tg.envoyer("\n\n".join(self.messages))
             self.messages = []
 
