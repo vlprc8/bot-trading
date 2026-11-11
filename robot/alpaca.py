@@ -22,8 +22,8 @@ class Alpaca:
     def __init__(self, cle=None, secret=None, url=URL_FICTIF):
         if url != URL_FICTIF:
             raise AlpacaErreur("ce robot ne parle qu'au compte FICTIF (%s)" % URL_FICTIF)
-        self.cle = cle or os.environ.get("ALPACA_API_KEY", "")
-        self.secret = secret or os.environ.get("ALPACA_SECRET_KEY", "")
+        self.cle = (cle or os.environ.get("ALPACA_API_KEY", "")).strip()
+        self.secret = (secret or os.environ.get("ALPACA_SECRET_KEY", "")).strip()
         if not self.cle or not self.secret:
             raise AlpacaErreur("clés Alpaca absentes : secrets ALPACA_API_KEY et ALPACA_SECRET_KEY")
         self.url = url

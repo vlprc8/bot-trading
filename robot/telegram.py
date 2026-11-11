@@ -8,7 +8,7 @@ import urllib.request
 
 class Telegram:
     def __init__(self, jeton=None, chat_id=None):
-        self.jeton = jeton or os.environ.get("TELEGRAM_TOKEN", "")
+        self.jeton = (jeton or os.environ.get("TELEGRAM_TOKEN", "")).strip()  # espaces collés par erreur
         self.chat_id = chat_id
         if not self.jeton:
             raise RuntimeError("jeton Telegram absent : secret TELEGRAM_TOKEN")
