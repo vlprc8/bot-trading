@@ -21,8 +21,8 @@ def main(argv=None):
     ap.add_argument("--frais", type=float, default=0.001, help="frais par côté (0.001 = 0,10 %%)")
     ap.add_argument("--positions", type=int, default=5, help="positions simultanées au maximum")
     ap.add_argument("--capital", type=float, default=1000.0, help="capital de départ en dollars")
-    ap.add_argument("--sl", type=float, default=2.0, help="stop loss en multiples d'ATR (variante SL/TP)")
-    ap.add_argument("--tp", type=float, default=3.0, help="take profit en multiples d'ATR (variante SL/TP)")
+    ap.add_argument("--sl", type=float, default=3.0, help="stop de sécurité en multiples d'ATR (variante + stop)")
+    ap.add_argument("--tp", type=float, default=None, help="take profit en multiples d'ATR (aucun par défaut)")
     a = ap.parse_args(argv)
 
     symboles = univers.tous_les_symboles()
@@ -40,7 +40,7 @@ def main(argv=None):
 
     reference = moteur.acheter_et_garder(data[univers.REFERENCE], capital=a.capital, frais=a.frais, fractions=True)
     resultats, stress = {}, {}
-    variantes = [("", None, None), (" + SL/TP", a.sl, a.tp)]
+    variantes = [("", None, None), (" + stop", a.sl, a.tp)]
     for strat in strategies.TOUTES:
         for nom_u, liste in (strat.univers_fixe or univers.UNIVERS).items():
             sous = {s: data[s] for s in liste if s in data}

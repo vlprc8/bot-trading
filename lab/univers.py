@@ -28,12 +28,24 @@ GRANDES_ACTIONS = [
     "T", "VZ", "IBM", "CAT", "BA", "GE", "HON", "LOW", "SBUX", "GS",
 ]
 
-UNIVERS = {"etf": ETF, "actions": GRANDES_ACTIONS}
+def _sp500():
+    """Les ~500 entreprises du S&P 500 (liste du 05/11/2026, github.com/datasets/s-and-p-500-companies).
+    Même biais que GRANDES_ACTIONS : ce sont les membres d'AUJOURD'HUI."""
+    import csv
+    import os
+    chemin = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sp500.csv")
+    with open(chemin, encoding="utf-8") as fh:
+        return [r["symbole"] for r in csv.DictReader(fh)]
+
+
+SP500 = _sp500()
+
+UNIVERS = {"etf": ETF, "actions": GRANDES_ACTIONS, "sp500": SP500}
 
 
 def tous_les_symboles():
     vus, out = set(), []
-    for s in [REFERENCE] + ETF + GRANDES_ACTIONS:
+    for s in [REFERENCE] + ETF + GRANDES_ACTIONS + SP500:
         if s not in vus:
             vus.add(s)
             out.append(s)

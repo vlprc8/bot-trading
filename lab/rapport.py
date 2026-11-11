@@ -103,9 +103,9 @@ def ecrire(lignes, courbes, config, lignes_stress=None, synthetique=False, dossi
                  config["max_positions"], 100 * config["frais"]))
     if config.get("sl"):
         L.append("")
-        L.append("Variantes « + SL/TP » : stop loss à %g x ATR(14) sous le prix d'achat, take profit à %g x ATR(14) "
-                 "au-dessus, actifs dès le lendemain de l'achat ; les sorties de la stratégie restent en place."
-                 % (config["sl"], config["tp"]))
+        L.append("Variantes « + stop » : stop de sécurité à %g x ATR(14) sous le prix d'achat%s, actif dès le "
+                 "lendemain de l'achat ; les sorties de la stratégie restent en place."
+                 % (config["sl"], (", take profit à %g x ATR(14)" % config["tp"]) if config.get("tp") else ""))
     L.append("")
     L.append("![courbes](courbes.png)")
     L.append("")
