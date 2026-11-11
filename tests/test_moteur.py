@@ -70,7 +70,7 @@ class Execution(unittest.TestCase):
 class PasDeFutur(unittest.TestCase):
     def test_couper_les_donnees_ne_change_rien_au_passe(self):
         data = donnees.synthetiques(["A", "B", "C", "D"], debut="2005-01-03", fin="2014-12-31")
-        coupe = pd.Timestamp("2011-06-15")
+        coupe = pd.Timestamp("2011-06-30")  # fin de mois : le tournant du mois lit le calendrier
         court = {s: df[df.index <= coupe] for s, df in data.items()}
         for strat in strategies.TOUTES:
             plein = moteur.backtest(data, strat)["equity"]
@@ -87,6 +87,30 @@ class PasDeFutur(unittest.TestCase):
             b = [x[x.index <= coupe] for x in strat.signaux(trafique)]
             for x, y in zip(a, b):
                 pd.testing.assert_series_equal(x, y)
+
+
+class NouvellesStrategies(unittest.TestCase):
+    def test_vendredi_et_tournant_du_mois(self):
+        df = serie([10.0] * 45, [10.0] * 45, debut="2026-09-01")   # 1er sept. 2026 = mardi
+        v = strategies.vendredi(df)
+        self.assertTrue(all(d.weekday() == 4 for d in df.index[v.values][:-1]))
+        e, _, x = strategies.TournantDuMois().signaux(df)
+        self.assertEqual([d.strftime("%m-%d") for d in df.index[e.values]], ["09-28", "10-28"])  # 3e avant la fin
+        self.assertEqual([d.strftime("%m-%d") for d in df.index[x.values]], ["09-03", "10-05"])  # 3e séance
+
+    def test_ibs(self):
+        df = pd.DataFrame({"open": [10.0], "high": [12.0], "low": [10.0], "close": [10.5]},
+                          index=pd.DatetimeIndex(["2020-01-02"]))
+        self.assertAlmostEqual(strategies.ibs(df).iloc[0], 0.25)
+
+    def test_toutes_tournent_sans_regarder_le_futur(self):
+        df = donnees.synthetiques(["A"])["A"]
+        coupe = df.index[3000]
+        trafique = df.copy()
+        trafique.loc[trafique.index > coupe, ["open", "high", "low", "close"]] *= 3
+        for strat in strategies.LOT_2:
+            for x, y in zip(strat.signaux(df), strat.signaux(trafique)):
+                pd.testing.assert_series_equal(x[x.index <= coupe], y[y.index <= coupe])
 
 
 class Indicateurs(unittest.TestCase):

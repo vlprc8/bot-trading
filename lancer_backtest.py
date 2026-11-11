@@ -37,20 +37,22 @@ def main(argv=None):
 
     reference = moteur.acheter_et_garder(data[univers.REFERENCE], frais=a.frais)
     resultats, stress = {}, {}
-    for nom_u, liste in univers.UNIVERS.items():
-        sous = {s: data[s] for s in liste if s in data}
-        for strat in strategies.TOUTES:
+    for strat in strategies.TOUTES:
+        for nom_u, liste in (strat.univers_fixe or univers.UNIVERS).items():
+            sous = {s: data[s] for s in liste if s in data}
+            pos = strat.max_positions or a.positions
             nom = "%s / %s" % (strat.nom, nom_u)
-            print("Backtest %-28s sur %d valeurs..." % (nom, len(sous)))
-            resultats[nom] = moteur.backtest(sous, strat, max_positions=a.positions, frais=a.frais)
-            stress[nom] = moteur.backtest(sous, strat, max_positions=a.positions, frais=2 * a.frais)
+            print("Backtest %-30s sur %d valeurs..." % (nom, len(sous)))
+            resultats[nom] = moteur.backtest(sous, strat, max_positions=pos, frais=a.frais)
+            stress[nom] = moteur.backtest(sous, strat, max_positions=pos, frais=2 * a.frais)
 
     lignes = stats.tableau(resultats, reference)
     ref_stress = moteur.acheter_et_garder(data[univers.REFERENCE], frais=2 * a.frais)
     lignes_stress = stats.tableau(stress, ref_stress)
     courbes = {"REFERENCE SPY": reference}
     courbes.update({n: r["equity"] for n, r in resultats.items()})
-    chemin = rapport.ecrire(lignes, courbes, {"frais": a.frais, "max_positions": a.positions},
+    descriptions = {s.nom: s.description for s in strategies.TOUTES}
+    chemin = rapport.ecrire(lignes, courbes, descriptions=descriptions, config={"frais": a.frais, "max_positions": a.positions},
                             lignes_stress=lignes_stress, synthetique=a.synthetique)
 
     print("\nPériode de vérification (2019 à aujourd'hui) :")
