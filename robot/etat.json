@@ -2,21 +2,17 @@
   "pause": false,
   "decalage_telegram": 90854177,
   "depart": null,
-  "positions": [],
-  "ordres": [
+  "positions": [
     {
-      "id": "3b52783a-12a1-48a7-a4b2-84dfcab5c541",
       "poche": "test",
       "symbole": "AAPL",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 5.0,
-      "atr": 9.526432582310267,
-      "raison": "test des boutons Oui / Non",
-      "date": "2026-11-11"
+      "qte": 0.01407013,
+      "date_entree": "2026-11-11",
+      "prix_entree": 354.652,
+      "stop": 326.07
     }
   ],
+  "ordres": [],
   "dernier_matin": null,
   "dernier_soir": null,
   "propositions": [
