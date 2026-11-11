@@ -37,6 +37,7 @@ class Strategie:
     nom = "?"
     description = "?"
     jours_max = 5
+    sortie_texte = "selon les règles de la stratégie"
     univers_fixe = None     # sinon {nom: [symboles]} : remplace les univers par défaut
     max_positions = None    # sinon impose le nombre de positions
 
@@ -52,6 +53,7 @@ class RebondCourt(Strategie):
     nom = "rebond_court"
     description = ("Achat si clôture > moyenne 200 jours ET RSI(2) < 10 ; "
                    "vente si clôture > moyenne 5 jours, ou après 5 jours")
+    sortie_texte = "dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances"
     jours_max = 5
 
     def __init__(self, seuil_rsi=10.0):
@@ -72,6 +74,7 @@ class CassureCourte(Strategie):
     nom = "cassure_courte"
     description = ("Achat si clôture = plus haute des 20 derniers jours ET > moyenne 200 jours ; "
                    "vente si clôture < plus basse des 5 jours précédents, ou après 10 jours")
+    sortie_texte = "dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances"
     jours_max = 10
 
     def signaux(self, df):
@@ -155,6 +158,7 @@ class TournantDuMois(Strategie):
     nom = "tournant_du_mois"
     description = ("Achat à l'ouverture de l'avant-dernière séance du mois ; "
                    "vente à l'ouverture de la 4e séance du mois suivant")
+    sortie_texte = "à l'ouverture de la 4e séance du mois prochain"
     jours_max = 6
     univers_fixe = {"spy": ["SPY"]}
     max_positions = 1

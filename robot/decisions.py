@@ -5,8 +5,6 @@ Le matin du jour D (avant l'ouverture), on regarde les cours jusqu'à la clôtur
 c'est la même chose que « décision le soir, ordre à l'ouverture du lendemain » dans le labo.
 """
 
-import math
-
 import pandas as pd
 
 from lab import strategies, univers
@@ -39,23 +37,26 @@ def decider_calendrier(poche, positions, jour, sessions_mois, budget_par_positio
     return ventes, achats
 
 
+def _atr(df):
+    a = strategies.atr(df, 14)
+    return float(a.iloc[-1]) if len(a) and not pd.isna(a.iloc[-1]) else None
+
+
 def decider(poche, data, positions, detenus_ailleurs, jour, derniere_session, sessions_mois,
             capital_total, ordre_max):
-    """Retourne (ventes [(position, raison)], achats [(symbole, qte, prix_ref, raison)])."""
+    """Retourne (ventes [(position, raison)], achats [(symbole, montant_$, prix_ref, raison, atr)]).
+    Le montant est en dollars : le robot achète des fractions d'actions."""
     strat = STRATEGIES[poche["strategie"]]
-    budget = capital_total * poche["part"] / poche["max_positions"]
+    montant = round(min(capital_total * poche["part"] / poche["max_positions"], ordre_max), 2)
 
     if strat.nom == "tournant_du_mois":
-        ventes, brut = decider_calendrier(poche, positions, jour, sessions_mois, budget, ordre_max)
+        ventes, brut = decider_calendrier(poche, positions, jour, sessions_mois, montant, ordre_max)
         achats = []
         for s, _, raison in brut:
             df = _jusqua(data.get(s, pd.DataFrame()), derniere_session)
-            if df.empty or s in detenus_ailleurs:
+            if df.empty or s in detenus_ailleurs or montant < 1:
                 continue
-            prix = float(df["close"].iloc[-1])
-            qte = math.floor(min(budget, ordre_max) / prix)
-            if qte >= 1:
-                achats.append((s, qte, prix, raison))
+            achats.append((s, montant, float(df["close"].iloc[-1]), raison, _atr(df)))
         return ventes, achats
 
     ventes = []
@@ -81,11 +82,17 @@ def decider(poche, data, positions, detenus_ailleurs, jour, derniere_session, se
             continue  # données pas à jour : on ne décide pas sur un vieux cours
         entree, score, _ = strat.signaux(df)
         if bool(entree.iloc[-1]):
-            candidats.append((float(score.iloc[-1]), s, float(df["close"].iloc[-1])))
-    candidats.sort()
+            candidats.append((float(score.iloc[-1]), s, float(df["close"].iloc[-1]), _atr(df)))
+    candidats.sort(key=lambda c: (c[0], c[1]))
     achats = []
-    for _, s, prix in candidats[:max(0, places)]:
-        qte = math.floor(min(budget, ordre_max) / prix)
-        if qte >= 1:
-            achats.append((s, qte, prix, "signal d'entrée de %s" % strat.nom))
+    if montant >= 1:
+        for _, s, prix, a in candidats[:max(0, places)]:
+            achats.append((s, montant, prix, "signal d'entrée de %s" % strat.nom, a))
     return ventes, achats
+
+
+def stop_securite(prix, atr, poche, config):
+    """Le stop de sécurité d'une position (prix - stop_atr x ATR), ou None s'il est désactivé."""
+    if not atr or not poche.get("stop_securite", True):
+        return None
+    return round(prix - config["stop_atr"] * atr, 2)

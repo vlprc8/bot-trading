@@ -64,7 +64,18 @@ class Alpaca:
     def annuler_tout(self):
         return self._appel("DELETE", "/orders")
 
-    def passer_ordre(self, symbole, qte, cote, ref):
-        return self._appel("POST", "/orders", corps={
-            "symbol": symbole_alpaca(symbole), "qty": str(int(qte)), "side": cote,
-            "type": "market", "time_in_force": "day", "client_order_id": ref[:48]})
+    def annuler(self, identifiant):
+        return self._appel("DELETE", "/orders/%s" % identifiant)
+
+    def passer_ordre(self, symbole, cote, ref, qte=None, montant=None, stop=None):
+        """Ordre valable pour la journée. Achat : `montant` en dollars (fractions d'actions).
+        Vente : `qte` (fractions possibles), au marché, ou en ordre stop si `stop` est donné."""
+        corps = {"symbol": symbole_alpaca(symbole), "side": cote, "time_in_force": "day",
+                 "client_order_id": ref[:48], "type": "stop" if stop else "market"}
+        if montant is not None:
+            corps["notional"] = "%.2f" % montant
+        else:
+            corps["qty"] = ("%.9f" % qte).rstrip("0").rstrip(".")
+        if stop:
+            corps["stop_price"] = "%.2f" % stop
+        return self._appel("POST", "/orders", corps=corps)

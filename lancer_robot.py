@@ -30,6 +30,7 @@ RACINE = os.path.dirname(os.path.abspath(__file__))
 CONFIG = os.path.join(RACINE, "robot", "config.json")
 ETAT = os.path.join(RACINE, "robot", "etat.json")
 JOURNAL = os.path.join(RACINE, "robot", "journal.csv")
+STATS = os.path.join(RACINE, "robot", "statistiques.json")
 COLONNES_JOURNAL = ["date_sortie", "poche", "symbole", "qte", "date_entree", "prix_entree", "prix_sortie",
                     "pnl", "rendement", "raison_sortie"]
 AIDE = ("<b>Commandes</b> (lues au prochain passage du robot, vers 13h30-14h30 et 22h30) :\n"
@@ -72,6 +73,10 @@ def dollars(x, signe=False):
     return ("+" if x >= 0 else "-") + s + " $" if signe else ("-" if x < 0 else "") + s + " $"
 
 
+def qte_txt(q):
+    return ("%.4f" % q).rstrip("0").rstrip(".").replace(".", ",")
+
+
 def pct(x):
     return ("%+.2f %%" % (100 * x)).replace(".", ",")
 
@@ -106,6 +111,7 @@ class Robot:
         self.etat = lire_json(ETAT, etat_vide())
         self.alpaca = Alpaca()
         self.tg = Telegram(chat_id=self.config.get("chat_id"))
+        self.stats = lire_json(STATS, {}).get("poches", {})
         self.messages = []
 
     def dire(self, texte):
@@ -155,43 +161,57 @@ class Robot:
             if not final:
                 restants.append(o)
                 continue
+            genre = o.get("genre", "achat" if o["cote"] == "buy" else "vente")
             if rempli > 0:
                 prix = float(d["filled_avg_price"])
                 quand = str(pd.Timestamp(d["filled_at"]).tz_convert("America/New_York").date())
                 if o["cote"] == "buy":
-                    self.etat["positions"].append({"poche": o["poche"], "symbole": o["symbole"], "qte": int(rempli),
-                                                   "date_entree": quand, "prix_entree": prix})
-                    self.dire("✅ <b>Achat exécuté</b> [%s] %d %s à %s" % (o["poche"], rempli, o["symbole"], dollars(prix)))
+                    poche = self.poche(o["poche"])
+                    stop = decisions.stop_securite(prix, o.get("atr"), poche or {}, self.config)
+                    self.etat["positions"].append({"poche": o["poche"], "symbole": o["symbole"], "qte": rempli,
+                                                   "date_entree": quand, "prix_entree": prix, "stop": stop})
+                    ligne = "✅ <b>Achat exécuté</b> [%s] %s %s à %s (%s)" % (
+                        o["poche"], qte_txt(rempli), o["symbole"], dollars(prix), dollars(rempli * prix))
+                    if stop:
+                        ligne += "\n   🛑 Stop de sécurité %s (%s, soit %s au pire au prix du stop)" % (
+                            dollars(stop), pct(stop / prix - 1), dollars((stop - prix) * rempli, True))
+                    self.dire(ligne)
                 else:
-                    self.enregistrer_vente(o, int(rempli), prix, quand)
-            if statut != "filled":
-                self.dire("⚠️ Ordre %s %s %s : %s (exécuté %d sur %d)" % (
+                    raison = "stop de sécurité touché" if genre == "stop" else o.get("raison", "")
+                    self.enregistrer_vente(o, rempli, prix, quand, raison)
+            if statut != "filled" and genre != "stop":   # un stop non déclenché expire chaque soir : normal
+                self.dire("⚠️ Ordre %s [%s] %s : %s (exécuté %s)" % (
                     "d'achat" if o["cote"] == "buy" else "de vente", o["poche"], o["symbole"], statut,
-                    rempli, o["qte"]))
+                    qte_txt(rempli)))
         self.etat["ordres"] = restants
 
-    def enregistrer_vente(self, o, qte, prix, quand):
+    def poche(self, nom):
+        return next((p for p in self.config["poches"] if p["nom"] == nom), None)
+
+    def enregistrer_vente(self, o, qte, prix, quand, raison):
         pos = next((p for p in self.etat["positions"]
                     if p["poche"] == o["poche"] and p["symbole"] == o["symbole"]), None)
         if pos is None:
             return
         pnl = (prix - pos["prix_entree"]) * qte
         r = prix / pos["prix_entree"] - 1
-        ajouter_journal({"date_sortie": quand, "poche": o["poche"], "symbole": o["symbole"], "qte": qte,
+        ajouter_journal({"date_sortie": quand, "poche": o["poche"], "symbole": o["symbole"], "qte": round(qte, 6),
                          "date_entree": pos["date_entree"], "prix_entree": round(pos["prix_entree"], 4),
                          "prix_sortie": round(prix, 4), "pnl": round(pnl, 2), "rendement": round(r, 5),
-                         "raison_sortie": o.get("raison", "")})
+                         "raison_sortie": raison})
         pos["qte"] -= qte
-        if pos["qte"] <= 0:
+        if pos["qte"] <= 1e-6:
             self.etat["positions"].remove(pos)
-        self.dire("%s <b>Vente exécutée</b> [%s] %d %s à %s : %s (%s)" % (
-            "🟢" if pnl >= 0 else "🔴", o["poche"], qte, o["symbole"], dollars(prix), dollars(pnl, True), pct(r)))
+        self.dire("%s <b>Vente exécutée</b> [%s] %s %s à %s : %s (%s), %s" % (
+            "🟢" if pnl >= 0 else "🔴", o["poche"], qte_txt(qte), o["symbole"], dollars(prix),
+            dollars(pnl, True), pct(r), raison))
 
-    def envoyer_ordre(self, poche, symbole, qte, cote, raison, jour):
-        ref = "%s-%s-%s-%s" % (jour, poche, symbole, cote)
-        d = self.alpaca.passer_ordre(symbole, qte, cote, ref)
-        self.etat["ordres"].append({"id": d["id"], "poche": poche, "symbole": symbole, "qte": int(qte),
-                                    "cote": cote, "raison": raison, "date": str(jour)})
+    def envoyer_ordre(self, poche, symbole, cote, raison, jour, genre, qte=None, montant=None, stop=None, atr=None):
+        ref = "%s-%s-%s-%s" % (jour, poche, symbole, genre)
+        d = self.alpaca.passer_ordre(symbole, cote, ref, qte=qte, montant=montant, stop=stop)
+        self.etat["ordres"].append({"id": d["id"], "poche": poche, "symbole": symbole, "cote": cote,
+                                    "genre": genre, "qte": qte, "montant": montant, "atr": atr,
+                                    "raison": raison, "date": str(jour)})
 
     # -- garde-fous
     def verifier_perte_totale(self, equity):
@@ -209,14 +229,33 @@ class Robot:
             print("annulation : %s" % exc)
         jour = datetime.date.today().isoformat()
         for p in list(self.etat["positions"]):
-            if any(o["poche"] == p["poche"] and o["symbole"] == p["symbole"] and o["cote"] == "sell"
+            if any(o["poche"] == p["poche"] and o["symbole"] == p["symbole"] and o.get("genre") == "vente"
                    for o in self.etat["ordres"]):
                 continue
-            self.envoyer_ordre(p["poche"], p["symbole"], p["qte"], "sell", "arrêt : " + pourquoi, jour)
+            self.envoyer_ordre(p["poche"], p["symbole"], "sell", "arrêt : " + pourquoi, jour, "arret", qte=p["qte"])
         self.etat["pause"] = True
         self.dire("🛑 <b>Robot en pause</b> : %s. Ordres en attente annulés, ventes de toutes les positions "
                   "envoyées (exécution à la prochaine ouverture si la bourse est fermée). /reprendre pour relancer."
                   % pourquoi)
+
+    def texte_achat(self, poche, symbole, montant, prix, atr):
+        strat = decisions.STRATEGIES[poche["strategie"]]
+        lignes = ["🟢 [%s] <b>Acheter %s de %s</b> (≈ %s action à ~%s)" % (
+            poche["nom"], dollars(montant), symbole, qte_txt(montant / prix), dollars(prix))]
+        stop = decisions.stop_securite(prix, atr, poche, self.config)
+        if stop:
+            lignes.append("   🛑 Stop de sécurité ~%s : %s, soit %s au pire au prix du stop" % (
+                dollars(stop), pct(stop / prix - 1), dollars(montant * (stop / prix - 1), True)))
+        lignes.append("   🚪 Sortie prévue : %s" % strat.sortie_texte)
+        st = self.stats.get(poche["nom"])
+        if st and st.get("trades"):
+            lignes.append("   📊 Historique 2019-2026 (%d trades) : %s gagnants ; quand ça gagne %s (≈ %s), "
+                          "quand ça perd %s (≈ %s) ; durée moyenne %s jours" % (
+                              st["trades"], ("%.0f %%" % (100 * st["gagnants"])),
+                              pct(st["gain_moyen"]), dollars(montant * st["gain_moyen"], True),
+                              pct(st["perte_moyenne"]), dollars(montant * st["perte_moyenne"], True),
+                              str(st["jours_moyens"]).replace(".", ",")))
+        return "\n".join(lignes)
 
     # -- les passages
     def matin(self, force=False):
@@ -236,6 +275,12 @@ class Robot:
             return
         compte = self.alpaca.compte()
         equity = float(compte["equity"])
+        plafond = self.config["garde_fous"].get("compte_max_usd")
+        if plafond and equity > plafond:
+            self.dire("⚠️ Le compte Alpaca relié a %s, au-dessus de %s : ce n'est pas le compte à 1 000 $. "
+                      "Aucun ordre. Remets les clés du compte à 1 000 $ dans les secrets GitHub."
+                      % (dollars(equity), dollars(plafond)))
+            return
         if not self.etat.get("depart"):
             spy = cours(["SPY"], 15).get("SPY")
             self.etat["depart"] = {"date": str(jour), "equity": equity,
@@ -253,38 +298,47 @@ class Robot:
         data = {s: df[df.index <= pd.Timestamp(veille)] for s, df in data.items()}
         manquants = [s for s in tous if s not in data or data[s].empty or data[s].index[-1] != pd.Timestamp(veille)]
         ordre_max = self.config["garde_fous"]["ordre_max_usd"]
-        ventes_txt, achats_txt = [], []
-        achats_prevus = []
+        ventes_txt, achats_txt, achats_prevus, vendus = [], [], [], set()
         for poche in self.config["poches"]:
             mes = [p for p in self.etat["positions"] if p["poche"] == poche["nom"]]
-            en_vente = {(o["poche"], o["symbole"]) for o in self.etat["ordres"] if o["cote"] == "sell"}
             ailleurs = {p["symbole"] for p in self.etat["positions"] if p["poche"] != poche["nom"]}
-            ailleurs |= {s for _, s, _, _, _ in achats_prevus}
+            ailleurs |= {a[1] for a in achats_prevus}
             ailleurs |= {o["symbole"] for o in self.etat["ordres"] if o["cote"] == "buy"}
             ventes, achats = decisions.decider(poche, data, mes, ailleurs, jour, veille, mois, equity, ordre_max)
             for p, raison in ventes:
-                if (p["poche"], p["symbole"]) in en_vente:
-                    continue
-                self.envoyer_ordre(poche["nom"], p["symbole"], p["qte"], "sell", raison, jour)
-                ventes_txt.append("• [%s] vendre %d %s : %s" % (poche["nom"], p["qte"], p["symbole"], raison))
-            for s, qte, prix, raison in achats:
-                achats_prevus.append((poche["nom"], s, qte, prix, raison))
+                self.envoyer_ordre(poche["nom"], p["symbole"], "sell", raison, jour, "vente", qte=p["qte"])
+                vendus.add((poche["nom"], p["symbole"]))
+                ventes_txt.append("🔵 [%s] <b>Vendre %s %s</b> : %s" % (poche["nom"], qte_txt(p["qte"]), p["symbole"], raison))
+            for s, montant, prix, raison, atr in achats:
+                achats_prevus.append((poche, s, montant, prix, raison, atr))
         cash = float(compte["cash"]) * 0.98
-        for poche_nom, s, qte, prix, raison in achats_prevus:
-            if qte * prix > cash:
-                qte = math.floor(cash / prix)
-            if qte < 1:
-                achats_txt.append("• [%s] %s : signal, mais plus assez de liquidités" % (poche_nom, s))
+        for poche, s, montant, prix, raison, atr in achats_prevus:
+            montant = round(min(montant, cash), 2)
+            if montant < 1:
+                achats_txt.append("• [%s] %s : signal, mais plus assez de liquidités" % (poche["nom"], s))
                 continue
-            self.envoyer_ordre(poche_nom, s, qte, "buy", raison, jour)
-            cash -= qte * prix
-            achats_txt.append("• [%s] acheter %d %s (~%s) : %s" % (poche_nom, qte, s, dollars(qte * prix), raison))
+            self.envoyer_ordre(poche["nom"], s, "buy", raison, jour, "achat", montant=montant, atr=atr)
+            cash -= montant
+            achats_txt.append(self.texte_achat(poche, s, montant, prix, atr))
+        # stops de sécurité du jour pour les positions gardées (un ordre stop ne vaut que pour la journée)
+        stops_txt = []
+        for p in self.etat["positions"]:
+            if (p["poche"], p["symbole"]) in vendus or not p.get("stop"):
+                continue
+            try:
+                self.envoyer_ordre(p["poche"], p["symbole"], "sell", "stop de sécurité", jour, "stop",
+                                   qte=p["qte"], stop=p["stop"])
+                stops_txt.append("%s %s" % (p["symbole"], dollars(p["stop"])))
+            except Exception as exc:
+                self.dire("⚠️ Stop de sécurité non posé sur %s : %s" % (p["symbole"], str(exc)[:200]))
         lignes = ["☀️ <b>Ordres du %s</b> (exécution à l'ouverture, 15h30 heure de Paris en temps normal)"
-                  % jour.strftime("%d/%m")]
+                  % jour.strftime("%d/%m"), "Capital : %s" % dollars(equity)]
         lignes += ventes_txt + achats_txt or ["Aucun signal : on ne touche à rien aujourd'hui."]
+        if stops_txt:
+            lignes.append("🛑 Stops de sécurité en place : " + ", ".join(stops_txt))
         if manquants:
             lignes.append("<i>Cours manquants ou pas à jour, ignorés : %s</i>" % ", ".join(manquants))
-        self.dire("\n".join(lignes))
+        self.dire("\n\n".join(lignes))
 
     def soir(self):
         _, jour = self.aujourdhui_ny()
@@ -315,9 +369,10 @@ class Robot:
             for p in self.etat["positions"]:
                 a = pos.get(p["symbole"])
                 prix = float(a["current_price"]) if a else p["prix_entree"]
-                lignes.append("• [%s] %d %s, entrée %s le %s, %s" % (
-                    p["poche"], p["qte"], p["symbole"], dollars(p["prix_entree"]), p["date_entree"],
-                    pct(prix / p["prix_entree"] - 1)))
+                lignes.append("• [%s] %s %s, entrée %s le %s, %s (%s)%s" % (
+                    p["poche"], qte_txt(p["qte"]), p["symbole"], dollars(p["prix_entree"]), p["date_entree"],
+                    pct(prix / p["prix_entree"] - 1), dollars((prix - p["prix_entree"]) * p["qte"], True),
+                    (", stop %s" % dollars(p["stop"])) if p.get("stop") else ""))
         else:
             lignes.append("Aucune position.")
         if os.path.exists(JOURNAL):

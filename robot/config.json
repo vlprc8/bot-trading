@@ -6,14 +6,16 @@
       "strategie": "cassure_courte",
       "univers": "actions",
       "part": 0.34,
-      "max_positions": 5
+      "max_positions": 5,
+      "stop_securite": true
     },
     {
       "nom": "rebond",
       "strategie": "rebond_court",
       "univers": "actions",
       "part": 0.33,
-      "max_positions": 5
+      "max_positions": 5,
+      "stop_securite": true
     },
     {
       "nom": "tournant",
@@ -22,12 +24,15 @@
         "SPY"
       ],
       "part": 0.33,
-      "max_positions": 1
+      "max_positions": 1,
+      "stop_securite": true
     }
   ],
   "garde_fous": {
     "perte_max_totale_pct": 15,
     "ordre_max_usd": 15000,
+    "compte_max_usd": 10000,
     "compte_fictif_uniquement": true
-  }
+  },
+  "stop_atr": 3
 }

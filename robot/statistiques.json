@@ -1,0 +1,33 @@
+{
+  "periode": "2019-01-01 à aujourd'hui",
+  "stop_atr": 3,
+  "poches": {
+    "cassure": {
+      "trades": 1265,
+      "gagnants": 0.4142,
+      "gain_moyen": 0.0546,
+      "perte_moyenne": -0.0322,
+      "pire": -0.1719,
+      "jours_moyens": 6.8,
+      "stop_touche": 0.0522
+    },
+    "rebond": {
+      "trades": 1777,
+      "gagnants": 0.6038,
+      "gain_moyen": 0.0212,
+      "perte_moyenne": -0.03,
+      "pire": -0.3034,
+      "jours_moyens": 3.2,
+      "stop_touche": 0.0658
+    },
+    "tournant": {
+      "trades": 95,
+      "gagnants": 0.6421,
+      "gain_moyen": 0.0148,
+      "perte_moyenne": -0.0198,
+      "pire": -0.0652,
+      "jours_moyens": 4.7,
+      "stop_touche": 0.1053
+    }
+  }
+}

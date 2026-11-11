@@ -25,8 +25,8 @@ def simuler_en_direct(data, poche, debut="2006-01-01", fin="2009-12-31"):
         for p, _ in ventes:
             positions.remove(p)
             trades.append((p["symbole"], p["date_entree"], jour))
-        for s, qte, prix, _ in achats:
-            positions.append({"poche": poche["nom"], "symbole": s, "qte": qte, "date_entree": jour,
+        for s, montant, prix, _, _ in achats:
+            positions.append({"poche": poche["nom"], "symbole": s, "qte": montant / prix, "date_entree": jour,
                               "prix_entree": prix})
     return trades
 
@@ -40,7 +40,7 @@ class MemeRegleQueLeLabo(unittest.TestCase):
                  "max_positions": max_positions}
         live = simuler_en_direct(data, poche)
         strat = decisions.STRATEGIES[nom_strat]
-        bt = moteur.backtest(data, strat, capital=1e9, max_positions=max_positions, frais=0.0)["trades"]
+        bt = moteur.backtest(data, strat, capital=1e9, max_positions=max_positions, frais=0.0, fractions=True)["trades"]
         bt = [(r.symbole, r.entree, r.sortie) for r in bt.itertuples() if r.sortie <= pd.Timestamp("2009-12-31")]
         self.assertGreater(len(bt), 20)
         # deux ventes le même jour peuvent être notées dans un ordre différent : on trie
@@ -79,8 +79,18 @@ class Garde(unittest.TestCase):
         sessions = list(data["SPY"].index)
         mois = [d for d in sessions if d.to_period("M") == pd.Period("2008-06")]
         _, achats = decisions.decider(poche, data, [], set(), mois[-2], mois[-3], mois, 1e6, 15000)
-        s, qte, prix, _ = achats[0]
-        self.assertLessEqual(qte * prix, 15000)
+        s, montant, prix, _, atr = achats[0]
+        self.assertLessEqual(montant, 15000)
+        self.assertGreater(atr, 0)
+
+    def test_capital_de_1000_dollars_reparti(self):
+        data = donnees.synthetiques(["SPY"], debut="2005-01-03", fin="2008-12-31")
+        poche = {"nom": "t", "strategie": "tournant_du_mois", "symboles": ["SPY"], "part": 0.33, "max_positions": 1}
+        mois = [d for d in data["SPY"].index if d.to_period("M") == pd.Period("2008-06")]
+        _, achats = decisions.decider(poche, data, [], set(), mois[-2], mois[-3], mois, 1000, 15000)
+        self.assertEqual(achats[0][1], 330.0)
+        self.assertEqual(decisions.stop_securite(100.0, 2.5, poche, {"stop_atr": 3}), 92.5)
+        self.assertIsNone(decisions.stop_securite(100.0, 2.5, dict(poche, stop_securite=False), {"stop_atr": 3}))
 
     def test_l_url_du_compte_reel_est_refusee(self):
         from robot.alpaca import Alpaca, AlpacaErreur
