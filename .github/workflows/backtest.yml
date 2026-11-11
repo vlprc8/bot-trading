@@ -1,0 +1,47 @@
+name: Backtest
+
+# Se lance à la main : onglet Actions > Backtest > Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      frais:
+        description: "Frais par côté (0.001 = 0,10 %)"
+        default: "0.001"
+      positions:
+        description: "Positions simultanées au maximum"
+        default: "5"
+
+permissions:
+  contents: write   # pour enregistrer le rapport dans le dépôt
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Installer les bibliothèques
+        run: pip install -r requirements.txt
+
+      - name: Vérifier le moteur (tests)
+        run: python -m unittest discover -s tests -v
+
+      - name: Télécharger les données et lancer le backtest
+        run: python lancer_backtest.py --telecharger --frais "${{ inputs.frais }}" --positions "${{ inputs.positions }}"
+
+      - name: Afficher le résumé
+        run: cat rapport/RESULTATS.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enregistrer les données et le rapport dans le dépôt
+        run: |
+          git config user.name "bot-trading"
+          git config user.email "bot-trading@users.noreply.github.com"
+          git add data rapport
+          git commit -m "Backtest du $(date -u +%Y-%m-%d)" || echo "Rien de nouveau"
+          git push
