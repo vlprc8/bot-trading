@@ -242,6 +242,22 @@ class MomentumMensuel(Strategie):
         return entree.fillna(False), -perf, f
 
 
+class MomentumFiltre(MomentumMensuel):
+    """Momentum mensuel + filtre de marché (règle écrite le 12/11/2026 avant le test) : on n'achète que si
+    le S&P 500 lui-même est au-dessus de sa moyenne 200 jours. Le momentum s'effondre surtout dans les
+    rebonds de marchés baissiers (Daniel et Moskowitz, 2016) : on reste en dollars dans ces périodes."""
+
+    nom = "momentum_filtre"
+    description = ("Comme momentum_mensuel, mais seulement quand le S&P 500 (SPY) clôture au-dessus de sa "
+                   "moyenne 200 jours ; sinon on reste en dollars")
+    marche = None           # clôtures de SPY, fournies par le lanceur
+
+    def signaux(self, df):
+        e, score, x = super().signaux(df)
+        m = self.marche.reindex(df.index).ffill()
+        return e & (m > sma(m, 200)).reindex(df.index).fillna(False), score, x
+
+
 class RotationEtf(Strategie):
     """Rotation « dual momentum » (Antonacci) : chaque fin de mois, les 2 ETF qui ont le plus monté sur
     6 mois, s'ils sont en hausse ; sinon, à l'abri dans les obligations (TLT)."""
@@ -280,4 +296,4 @@ class SeulementMembres(Strategie):
 LOT_1 = [RebondCourt(), CassureCourte()]
 LOT_2 = [ClotureBasse(), RetournementHebdo(), MomentumHebdo(), TournantDuMois()]
 TOUTES = LOT_1 + LOT_2
-LOT_3 = [SautResultats(), Panique(), MomentumMensuel(), RotationEtf()]
+LOT_3 = [SautResultats(), Panique(), MomentumMensuel(), MomentumFiltre(), RotationEtf()]

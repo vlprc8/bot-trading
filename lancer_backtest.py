@@ -51,6 +51,7 @@ def main(argv=None):
         df.attrs["symbole"] = s
     if lot3:
         strategies.RotationEtf.univers_fixe = {"etf": univers.ETF}
+        strategies.MomentumFiltre.marche = data["SPY"]["close"]
         if "^VIX" in data:
             strategies.Panique.vix = data.pop("^VIX")["close"]
         elif a.synthetique:
