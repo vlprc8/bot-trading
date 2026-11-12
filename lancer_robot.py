@@ -470,7 +470,9 @@ class Robot:
         fin = time.time() + attente
         while True:
             reste = int(fin - time.time())
-            self.lire_commandes(attente=max(0, min(25, reste)))
+            if self.lire_commandes(attente=max(0, min(25, reste))):
+                self.envoyer()      # réponses envoyées tout de suite
+                self.sauver()       # et état enregistré après chaque réponse
             if reste <= 0 or not any(p["statut"] == "en_attente" for p in self.etat["propositions"]):
                 break
         self.expirer_propositions(jour, self.alpaca.horloge()["is_open"])
