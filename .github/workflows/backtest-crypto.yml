@@ -1,0 +1,38 @@
+name: Backtest crypto
+
+# Se lance à la main : onglet Actions > Backtest crypto > Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      frais:
+        description: "Frais par côté (0.0025 = 0,25 %)"
+        default: "0.0025"
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Installer les bibliothèques
+        run: pip install -r requirements.txt
+      - name: Vérifier le code (tests)
+        run: python -m unittest discover -s tests -v
+      - name: Télécharger les cours et lancer le backtest
+        run: python lancer_crypto.py --telecharger --frais "${{ inputs.frais }}"
+      - name: Afficher le résumé
+        run: cat rapport/CRYPTO.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Enregistrer le rapport dans le dépôt
+        run: |
+          git config user.name "bot-trading"
+          git config user.email "bot-trading@users.noreply.github.com"
+          git add rapport/CRYPTO.md rapport/crypto.png
+          git commit -m "Backtest crypto du $(date -u +%Y-%m-%d)" || echo "Rien de nouveau"
+          for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done

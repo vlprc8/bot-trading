@@ -17,17 +17,17 @@ def _tranche(s, debut, fin):
     return s
 
 
-def stats_courbe(eq):
+def stats_courbe(eq, jours_an=252):
     """Rendement annuel, pire baisse, volatilité, Sharpe, sur une courbe de capital."""
     eq = eq.dropna()
     if len(eq) < 2:
         return {}
     r = eq.pct_change().dropna()
-    annees = len(r) / 252.0
+    annees = len(r) / float(jours_an)
     cagr = (eq.iloc[-1] / eq.iloc[0]) ** (1 / annees) - 1 if annees > 0 else np.nan
     dd = (eq / eq.cummax() - 1).min()
-    vol = r.std() * np.sqrt(252)
-    sharpe = r.mean() / r.std() * np.sqrt(252) if r.std() > 0 else np.nan
+    vol = r.std() * np.sqrt(jours_an)
+    sharpe = r.mean() / r.std() * np.sqrt(jours_an) if r.std() > 0 else np.nan
     return {"rendement_annuel": cagr, "pire_baisse": dd, "volatilite": vol, "sharpe": sharpe,
             "gain_total": eq.iloc[-1] / eq.iloc[0] - 1}
 
