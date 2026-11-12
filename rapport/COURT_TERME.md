@@ -74,3 +74,14 @@ Frais : 0.05 % par achat et par vente (grandes valeurs très échangées), test 
 - ❌ Sharpe meilleur que la référence
 - ❌ Pire baisse moins grave que -30 %
 
+## Pour information : rendement par an selon les frais (vérification 2021-auj.)
+
+Ce tableau n'est PAS un critère : il montre s'il existe un avantage avant frais, et combien les frais le mangent.
+
+| Stratégie | 0.00 % | 0.01 % | 0.02 % | 0.05 % | 0.10 % |
+|---|---|---|---|---|---|
+| cassure_ouverture | -0.8 % | -5.6 % | -10.2 % | -22.6 % | -39.5 % |
+| rebond_trou | -0.8 % | -1.2 % | -1.6 % | -2.7 % | -4.5 % |
+| fin_de_seance | -2.0 % | -4.7 % | -7.4 % | -14.9 % | -26.2 % |
+| chute_du_jour | +6.3 % | +5.2 % | +4.0 % | +0.6 % | -4.8 % |
+
