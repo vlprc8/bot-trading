@@ -1,6 +1,6 @@
 {
   "pause": false,
-  "decalage_telegram": 90854177,
+  "decalage_telegram": 90854182,
   "depart": {
     "date": "2026-11-12",
     "equity": 1000.0,
@@ -27,6 +27,18 @@
       "montant": null,
       "atr": null,
       "raison": "fin du test",
+      "date": "2026-11-12"
+    },
+    {
+      "id": "408b5385-9157-4ee0-96b7-004604701f45",
+      "poche": "cassure",
+      "symbole": "COST",
+      "cote": "buy",
+      "genre": "achat",
+      "qte": null,
+      "montant": 68.0,
+      "atr": 21.835521678620314,
+      "raison": "signal d'entrée de cassure_courte",
       "date": "2026-11-12"
     }
   ],
@@ -56,7 +68,7 @@
       "prix": 1087.6099853515625,
       "atr": 21.835521678620314,
       "raison": "signal d'entrée de cassure_courte",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "texte": "🟢 [cassure] <b>Acheter 68,00 $ de COST (Costco)</b> (≈ 0,0625 action à ~1 087,61 $)\n   🛑 Stop de sécurité ~1 022,10 $ : -6,02 %, soit -4,10 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 13,
       "test": false
