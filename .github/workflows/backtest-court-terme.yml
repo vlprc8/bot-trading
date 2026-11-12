@@ -1,0 +1,57 @@
+name: Backtest court terme
+
+# Se lance à la main : onglet Actions > Backtest court terme > Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      frais:
+        description: "Frais par côté (0.0005 = 0,05 %)"
+        default: "0.0005"
+
+permissions:
+  contents: write   # pour enregistrer le rapport dans le dépôt
+
+concurrency:
+  group: backtest-court-terme
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Installer les bibliothèques
+        run: pip install -r requirements.txt
+
+      - name: Vérifier le code (tests)
+        run: python -m unittest discover -s tests -v
+
+      - name: Récupérer les bougies déjà téléchargées
+        uses: actions/cache@v4
+        with:
+          path: data_court_terme
+          key: bougies15-${{ github.run_id }}
+          restore-keys: bougies15-
+
+      - name: Télécharger les bougies (Alpaca) et lancer le backtest
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+        run: python lancer_court_terme.py --telecharger --frais "${{ inputs.frais }}"
+
+      - name: Afficher le résumé
+        run: cat rapport/COURT_TERME.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enregistrer le rapport dans le dépôt
+        run: |
+          git config user.name "bot-trading"
+          git config user.email "bot-trading@users.noreply.github.com"
+          git add rapport/COURT_TERME.md rapport/court_terme.png
+          git commit -m "Backtest court terme du $(date -u +%Y-%m-%d)" || echo "Rien de nouveau"
+          for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done
