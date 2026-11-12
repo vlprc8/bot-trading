@@ -48,7 +48,12 @@ def main(argv=None):
     reference = clo_spy / clo_spy.iloc[0]
     res, courbes, _ = backtest.evaluer(tous, calendrier, reference, a.frais)
     res_stress, _, _ = backtest.evaluer(tous, calendrier, reference, 2 * a.frais)
-    chemin = backtest.ecrire(res, res_stress, courbes, reference, a.frais, synthetique=a.synthetique)
+    sensibilite = {}
+    for f in (0.0, 0.0001, 0.0002, 0.0005, 0.001):
+        r, _, _ = backtest.evaluer(tous, calendrier, reference, f)
+        sensibilite[f] = {l["strategie"]: l for l in r if l["periode"].startswith("verification")}
+    chemin = backtest.ecrire(res, res_stress, courbes, reference, a.frais, synthetique=a.synthetique,
+                             sensibilite=sensibilite)
     for l in res:
         if l["periode"].startswith("verification"):
             print("  %-36s rendement/an %+6.1f %%  pire baisse %6.1f %%  trades %s" % (

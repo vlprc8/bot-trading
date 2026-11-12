@@ -91,7 +91,7 @@ def verdicts(lignes, lignes_stress):
     return out
 
 
-def ecrire(lignes, lignes_stress, courbes, reference, frais, synthetique=False):
+def ecrire(lignes, lignes_stress, courbes, reference, frais, synthetique=False, sensibilite=None):
     dossier = os.path.join(RACINE, "rapport")
     os.makedirs(dossier, exist_ok=True)
     fig, ax = plt.subplots(figsize=(11, 6))
@@ -130,6 +130,15 @@ def ecrire(lignes, lignes_stress, courbes, reference, frais, synthetique=False):
         L.append("**%s : %s**" % (nom, "PASSE les %d critères" % len(crit) if ok else
                                    "%d / %d critères" % (sum(r for _, r in crit), len(crit))))
         L += ["- %s %s" % ("✅" if r else "❌", t) for t, r in crit] + [""]
+    if sensibilite:
+        fr = sorted(sensibilite)
+        L += ["## Pour information : rendement par an selon les frais (vérification 2021-auj.)", "",
+              "Ce tableau n'est PAS un critère : il montre s'il existe un avantage avant frais, et combien les "
+              "frais le mangent.", "",
+              "| Stratégie | " + " | ".join("%.2f %%" % (100 * f) for f in fr) + " |", "|" + "---|" * (len(fr) + 1)]
+        for nom in S.UNIVERS:
+            L.append("| %s | " % nom + " | ".join(_p(sensibilite[f][nom].get("rendement_annuel"), True) for f in fr) + " |")
+        L.append("")
     with open(os.path.join(dossier, "COURT_TERME.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return os.path.join(dossier, "COURT_TERME.md")

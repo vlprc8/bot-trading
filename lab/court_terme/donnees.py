@@ -46,6 +46,11 @@ def seance_normale(df):
 
 def telecharger(symbole, debut="2016-01-01", fin=None, dossier=DOSSIER):
     os.makedirs(dossier, exist_ok=True)
+    chemin = os.path.join(dossier, "%s.csv.gz" % symbole)
+    ancien = None
+    if os.path.exists(chemin):                      # déjà en cache : on ne télécharge que la suite
+        ancien = pd.read_csv(chemin, index_col=0, parse_dates=True)
+        debut = ancien.index.max().normalize().strftime("%Y-%m-%d")   # on reprend le dernier jour, pour comparer
     fin = fin or (pd.Timestamp.utcnow() - pd.Timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     lignes, jeton = [], None
     while True:
@@ -61,11 +66,20 @@ def telecharger(symbole, debut="2016-01-01", fin=None, dossier=DOSSIER):
             break
         time.sleep(0.35)                # ~170 requêtes par minute, sous la limite de 200
     if not lignes:
-        return None
+        return ancien
     df = pd.DataFrame(lignes, columns=["t", "open", "high", "low", "close", "volume"])
     df.index = pd.to_datetime(df.pop("t"), utc=True)
     df = seance_normale(df)
-    df.to_csv(os.path.join(dossier, "%s.csv.gz" % symbole), compression="gzip", float_format="%.4f")
+    if ancien is not None:
+        commun = ancien.index.intersection(df.index)
+        ecart = (df.loc[commun, "close"] / ancien.loc[commun, "close"] - 1).abs().max() if len(commun) else 1
+        if not ecart < 0.005:
+            # Les cours ont été réajustés depuis (division d'action, dividende) : on retélécharge tout.
+            os.remove(chemin)
+            return telecharger(symbole, dossier=dossier)
+        df = pd.concat([ancien, df])
+        df = df[~df.index.duplicated(keep="last")]
+    df.to_csv(chemin, compression="gzip", float_format="%.4f")
     return df
 
 
