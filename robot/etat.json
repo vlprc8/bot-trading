@@ -8,88 +8,47 @@
   },
   "positions": [
     {
-      "poche": "test",
-      "symbole": "AAPL",
-      "qte": 0.01407013,
-      "date_entree": "2026-11-11",
-      "prix_entree": 354.652,
-      "stop": 326.07
-    }
-  ],
-  "ordres": [
-    {
-      "id": "78b15598-ccf0-4e16-b735-b48c70dbcf8e",
-      "poche": "test",
-      "symbole": "AAPL",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.01407013,
-      "montant": null,
-      "atr": null,
-      "raison": "fin du test",
-      "date": "2026-11-12"
-    },
-    {
-      "id": "408b5385-9157-4ee0-96b7-004604701f45",
       "poche": "cassure",
       "symbole": "COST",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 68.0,
-      "atr": 21.835521678620314,
-      "raison": "signal d'entrée de cassure_courte",
-      "date": "2026-11-12"
+      "qte": 0.062034105,
+      "date_entree": "2026-11-12",
+      "prix_entree": 1096.01,
+      "stop": 1030.5
     },
     {
-      "id": "516a67a6-0d27-415d-a010-4788e978bd3e",
       "poche": "cassure",
       "symbole": "VZ",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 68.0,
-      "atr": 1.2314286913190569,
-      "raison": "signal d'entrée de cassure_courte",
-      "date": "2026-11-12"
+      "qte": 1.446595744,
+      "date_entree": "2026-11-12",
+      "prix_entree": 47.0,
+      "stop": 43.31
     },
     {
-      "id": "a0a76932-1218-433a-8fd7-37df623f9c10",
       "poche": "cassure",
       "symbole": "GE",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 68.0,
-      "atr": 11.858570643833705,
-      "raison": "signal d'entrée de cassure_courte",
-      "date": "2026-11-12"
+      "qte": 0.200035305,
+      "date_entree": "2026-11-12",
+      "prix_entree": 339.89,
+      "stop": 304.31
     },
     {
-      "id": "38422ea5-9601-49af-abb0-9c22adc41b68",
       "poche": "cassure",
       "symbole": "BRK-B",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 68.0,
-      "atr": 11.376429966517858,
-      "raison": "signal d'entrée de cassure_courte",
-      "date": "2026-11-12"
+      "qte": 0.114663968,
+      "date_entree": "2026-11-12",
+      "prix_entree": 592.95,
+      "stop": 558.82
     },
     {
-      "id": "a73626ec-193e-464e-925c-26b7aff4cff6",
       "poche": "cassure",
       "symbole": "KO",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 68.0,
-      "atr": 1.9407130650111608,
-      "raison": "signal d'entrée de cassure_courte",
-      "date": "2026-11-12"
+      "qte": 0.692080618,
+      "date_entree": "2026-11-12",
+      "prix_entree": 98.24,
+      "stop": 92.42
     }
   ],
+  "ordres": [],
   "dernier_matin": "2026-11-12",
   "dernier_soir": "2026-11-11",
   "propositions": [
