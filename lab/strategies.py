@@ -175,6 +175,109 @@ class TournantDuMois(Strategie):
         return entree, score, sortie
 
 
+def fin_de_mois(df):
+    """Dernière séance du mois."""
+    m = df.index.to_series().dt.to_period("M")
+    return pd.Series(m.values != np.append(m.values[1:], m.values[-1] + 1), index=df.index)
+
+
+# ---------------------------------------------------------------------------------------------
+# LOT 3 : stratégies documentées par la recherche. Règles écrites le 12/11/2026 AVANT le test.
+# ---------------------------------------------------------------------------------------------
+
+class SautResultats(Strategie):
+    """Saut sur nouvelle (souvent des résultats) : ouverture en hausse d'au moins 3 %, volume au moins
+    3 fois la normale, et le cours tient jusqu'à la clôture. La recherche (« post-earnings announcement
+    drift », Bernard et Thomas 1989 ; « earnings gaps ») montre une tendance à continuer quelques semaines."""
+
+    nom = "saut_resultats"
+    description = ("Achat si ouverture >= +3 % sur la veille, volume >= 3 fois la moyenne 50 jours et clôture >= "
+                   "ouverture ; revente au bout de 20 séances")
+    sortie_texte = "au bout de 20 séances"
+    jours_max = 20
+
+    def signaux(self, df):
+        o, c, v = df["open"], df["close"], df["volume"]
+        saut = o / c.shift(1) - 1
+        entree = (saut >= 0.03) & (v >= 3 * v.rolling(50, min_periods=50).mean().shift(1)) & (c >= o)
+        return entree.fillna(False), -saut, pd.Series(False, index=df.index)
+
+
+class Panique(Strategie):
+    """Acheter le S&P 500 quand l'indice de la peur (VIX) s'envole d'au moins 30 % au-dessus de sa moyenne
+    20 jours : les paniques sont en moyenne suivies de rebonds. Revente quand le VIX revient sous sa
+    moyenne, ou au bout de 10 séances."""
+
+    nom = "panique_vix"
+    description = ("SPY : achat si le VIX clôture 30 % au-dessus de sa moyenne 20 jours ; vente quand il repasse "
+                   "sous sa moyenne 20 jours, ou au bout de 10 séances")
+    sortie_texte = "quand le VIX redescend sous sa moyenne 20 jours, ou au bout de 10 séances"
+    jours_max = 10
+    univers_fixe = {"spy": ["SPY"]}
+    max_positions = 1
+    vix = None              # Series du VIX, fournie par le lanceur
+
+    def signaux(self, df):
+        if self.vix is None:
+            raise ValueError("données du VIX manquantes")
+        vx = self.vix.reindex(df.index).ffill()
+        m = vx.rolling(20, min_periods=20).mean()
+        return (vx >= 1.3 * m).fillna(False), pd.Series(0.0, index=df.index), (vx < m).fillna(False)
+
+
+class MomentumMensuel(Strategie):
+    """Momentum « 12 - 1 mois » (Jegadeesh et Titman 1993) : chaque fin de mois, garder les valeurs qui ont
+    le plus monté entre il y a 12 mois et il y a 1 mois, en tendance haussière. Rotation mensuelle."""
+
+    nom = "momentum_mensuel"
+    description = ("Chaque fin de mois : acheter les 5 valeurs (> moyenne 200 j) qui ont le plus monté entre "
+                   "il y a 12 mois et il y a 1 mois ; revendre à la fin du mois suivant")
+    sortie_texte = "à la fin du mois"
+    jours_max = 30
+
+    def signaux(self, df):
+        c, f = df["close"], fin_de_mois(df)
+        perf = c.shift(21) / c.shift(252) - 1
+        entree = f & (perf > 0) & (c > sma(c, 200))
+        return entree.fillna(False), -perf, f
+
+
+class RotationEtf(Strategie):
+    """Rotation « dual momentum » (Antonacci) : chaque fin de mois, les 2 ETF qui ont le plus monté sur
+    6 mois, s'ils sont en hausse ; sinon, à l'abri dans les obligations (TLT)."""
+
+    nom = "rotation_etf"
+    description = ("ETF, chaque fin de mois : les 2 qui ont le plus monté sur 6 mois (si hausse > 0) ; "
+                   "sinon obligations US (TLT) ; revente à la fin du mois suivant")
+    sortie_texte = "à la fin du mois"
+    jours_max = 30
+    univers_fixe = None     # rempli plus bas avec la liste des ETF
+    max_positions = 2
+
+    def signaux(self, df):
+        c, f = df["close"], fin_de_mois(df)
+        perf = c / c.shift(126) - 1
+        if getattr(df, "attrs", {}).get("symbole") == "TLT":
+            return f.fillna(False), pd.Series(1.0, index=df.index), f
+        return (f & (perf > 0)).fillna(False), -perf, f
+
+
+class SeulementMembres(Strategie):
+    """Enveloppe : mêmes règles, mais l'achat n'est permis que si la valeur était dans le S&P 500 ce jour-là."""
+
+    def __init__(self, interne):
+        self.interne = interne
+        for a in ("nom", "description", "jours_max", "sortie_texte", "max_positions"):
+            setattr(self, a, getattr(interne, a))
+        self.univers_fixe = None
+
+    def signaux(self, df):
+        from lab import univers
+        e, score, x = self.interne.signaux(df)
+        return e & univers.membre_sp500(df.attrs.get("symbole"), df.index), score, x
+
+
 LOT_1 = [RebondCourt(), CassureCourte()]
 LOT_2 = [ClotureBasse(), RetournementHebdo(), MomentumHebdo(), TournantDuMois()]
 TOUTES = LOT_1 + LOT_2
+LOT_3 = [SautResultats(), Panique(), MomentumMensuel(), RotationEtf()]

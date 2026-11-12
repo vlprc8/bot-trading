@@ -80,3 +80,33 @@ def tous_les_symboles():
             vus.add(s)
             out.append(s)
     return out
+
+
+# --- S&P 500 « historique » : les membres de l'indice À CHAQUE DATE (github.com/fja05680/sp500) ---
+# Pour retirer l'essentiel du biais du survivant : une valeur ne peut être achetée que les jours où
+# elle faisait vraiment partie du S&P 500. Limites : les sociétés disparues (faillites, rachats) n'ont
+# souvent plus de cours chez Yahoo, et les anciens noms de code (FB pour Meta…) ne sont pas retrouvés.
+# Une partie du biais reste donc, mais beaucoup moins qu'avec la liste d'aujourd'hui.
+
+import functools
+
+
+@functools.lru_cache(maxsize=1)
+def _historique():
+    import os
+    import pandas as pd
+    chemin = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sp500_historique.csv.gz")
+    h = pd.read_csv(chemin, parse_dates=["date"])
+    return [(d, set(t.split(","))) for d, t in zip(h["date"], h["tickers"])]
+
+
+def sp500_historique_symboles():
+    return sorted(set().union(*[t for _, t in _historique()]))
+
+
+def membre_sp500(symbole, index):
+    """Série vrai/faux : la valeur faisait-elle partie du S&P 500 ce jour-là ?"""
+    import pandas as pd
+    photos = _historique()
+    s = pd.Series([symbole in t for _, t in photos], index=pd.DatetimeIndex([d for d, _ in photos]))
+    return s.reindex(s.index.union(index)).ffill().reindex(index).fillna(False).astype(bool)

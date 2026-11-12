@@ -10,6 +10,9 @@ on:
       positions:
         description: "Positions simultanées au maximum"
         default: "5"
+      lot:
+        description: "0 = lots 1 et 2 ; 3 = stratégies de la recherche + S&P 500 historique"
+        default: "0"
 
 permissions:
   contents: write   # pour enregistrer le rapport dans le dépôt
@@ -33,10 +36,10 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Télécharger les données et lancer le backtest
-        run: python lancer_backtest.py --telecharger --frais "${{ inputs.frais }}" --positions "${{ inputs.positions }}"
+        run: python lancer_backtest.py --telecharger --frais "${{ inputs.frais }}" --positions "${{ inputs.positions }}" --lot "${{ inputs.lot }}"
 
       - name: Afficher le résumé
-        run: cat rapport/RESULTATS.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat rapport/RESULTATS.md rapport/lot3/RESULTATS.md 2>/dev/null >> "$GITHUB_STEP_SUMMARY" || true
 
       - name: Enregistrer les données et le rapport dans le dépôt
         run: |
@@ -44,4 +47,4 @@ jobs:
           git config user.email "bot-trading@users.noreply.github.com"
           git add data rapport
           git commit -m "Backtest du $(date -u +%Y-%m-%d)" || echo "Rien de nouveau"
-          git push
+          for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done
