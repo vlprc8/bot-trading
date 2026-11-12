@@ -2,6 +2,7 @@
 
 import json
 import os
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -16,8 +17,14 @@ class Telegram:
     def _appel(self, methode, params):
         url = "https://api.telegram.org/bot%s/%s" % (self.jeton, methode)
         req = urllib.request.Request(url, data=urllib.parse.urlencode(params).encode())
-        with urllib.request.urlopen(req, timeout=60) as r:
-            rep = json.loads(r.read().decode())
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                rep = json.loads(r.read().decode())
+        except urllib.error.HTTPError as e:      # Telegram renvoie 400 avec une description lisible
+            try:
+                rep = json.loads(e.read().decode())
+            except Exception:
+                rep = {"ok": False, "description": "HTTP %s" % e.code}
         if not rep.get("ok"):
             raise RuntimeError("Telegram %s : %s" % (methode, rep.get("description")))
         return rep["result"]
@@ -46,13 +53,13 @@ class Telegram:
         try:
             self._appel("editMessageText", {"chat_id": self.chat_id, "message_id": message_id, "text": texte,
                                             "parse_mode": "HTML", "disable_web_page_preview": "true"})
-        except RuntimeError as exc:
+        except Exception as exc:
             print("modification du message %s : %s" % (message_id, exc))
 
     def repondre_bouton(self, callback_id, texte):
         try:
             self._appel("answerCallbackQuery", {"callback_query_id": callback_id, "text": texte[:190]})
-        except RuntimeError as exc:  # un appui trop ancien ne peut plus recevoir de réponse : sans gravité
+        except Exception as exc:  # un appui trop ancien ne peut plus recevoir de réponse : sans gravité
             print("réponse au bouton : %s" % exc)
 
     def evenements(self, decalage=0, attente=0):
