@@ -1,6 +1,6 @@
 {
   "pause": false,
-  "decalage_telegram": 90854182,
+  "decalage_telegram": 90854184,
   "depart": {
     "date": "2026-11-12",
     "equity": 1000.0,
@@ -38,6 +38,18 @@
       "qte": null,
       "montant": 68.0,
       "atr": 21.835521678620314,
+      "raison": "signal d'entrée de cassure_courte",
+      "date": "2026-11-12"
+    },
+    {
+      "id": "516a67a6-0d27-415d-a010-4788e978bd3e",
+      "poche": "cassure",
+      "symbole": "VZ",
+      "cote": "buy",
+      "genre": "achat",
+      "qte": null,
+      "montant": 68.0,
+      "atr": 1.2314286913190569,
       "raison": "signal d'entrée de cassure_courte",
       "date": "2026-11-12"
     }
@@ -124,7 +136,7 @@
       "prix": 46.599998474121094,
       "atr": 1.2314286913190569,
       "raison": "signal d'entrée de cassure_courte",
-      "statut": "en_attente",
+      "statut": "acceptee",
       "texte": "🟢 [cassure] <b>Acheter 68,00 $ de VZ (Verizon)</b> (≈ 1,4592 action à ~46,60 $)\n   🛑 Stop de sécurité ~42,91 $ : -7,92 %, soit -5,38 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 17,
       "test": false
