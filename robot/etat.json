@@ -1,7 +1,11 @@
 {
   "pause": false,
   "decalage_telegram": 90854177,
-  "depart": null,
+  "depart": {
+    "date": "2026-11-12",
+    "equity": 1000.0,
+    "spy": 759.8099975585938
+  },
   "positions": [
     {
       "poche": "test",
@@ -12,8 +16,21 @@
       "stop": 326.07
     }
   ],
-  "ordres": [],
-  "dernier_matin": null,
+  "ordres": [
+    {
+      "id": "78b15598-ccf0-4e16-b735-b48c70dbcf8e",
+      "poche": "test",
+      "symbole": "AAPL",
+      "cote": "sell",
+      "genre": "vente",
+      "qte": 0.01407013,
+      "montant": null,
+      "atr": null,
+      "raison": "fin du test",
+      "date": "2026-11-12"
+    }
+  ],
+  "dernier_matin": "2026-11-12",
   "dernier_soir": "2026-11-11",
   "propositions": [
     {
@@ -29,6 +46,76 @@
       "texte": "🟢 [test] <b>Acheter 5,00 $ de AAPL</b> (≈ 0,0141 action à ~354,76 $)\n   🛑 Stop de sécurité ~326,18 $ : -8,05 %, soit -0,40 $ au pire au prix du stop\n   🚪 Sortie prévue : revendu automatiquement demain matin (c'est un test)\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +0,27 $), quand ça perd -3,22 % (≈ -0,16 $) ; durée moyenne 6,8 jours\n\n<b>C'est un TEST</b> : appuie sur Oui pour voir l'ordre arriver dans Alpaca.",
       "message_id": 9,
       "test": true
+    },
+    {
+      "id": "1112-1",
+      "jour": "2026-11-12",
+      "poche": "cassure",
+      "symbole": "COST",
+      "montant": 68.0,
+      "prix": 1087.6099853515625,
+      "atr": 21.835521678620314,
+      "raison": "signal d'entrée de cassure_courte",
+      "statut": "en_attente",
+      "texte": "🟢 [cassure] <b>Acheter 68,00 $ de COST (Costco)</b> (≈ 0,0625 action à ~1 087,61 $)\n   🛑 Stop de sécurité ~1 022,10 $ : -6,02 %, soit -4,10 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 13,
+      "test": false
+    },
+    {
+      "id": "1112-2",
+      "jour": "2026-11-12",
+      "poche": "cassure",
+      "symbole": "GE",
+      "montant": 68.0,
+      "prix": 342.75,
+      "atr": 11.858570643833705,
+      "raison": "signal d'entrée de cassure_courte",
+      "statut": "en_attente",
+      "texte": "🟢 [cassure] <b>Acheter 68,00 $ de GE (GE Aerospace)</b> (≈ 0,1984 action à ~342,75 $)\n   🛑 Stop de sécurité ~307,17 $ : -10,38 %, soit -7,06 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 14,
+      "test": false
+    },
+    {
+      "id": "1112-3",
+      "jour": "2026-11-12",
+      "poche": "cassure",
+      "symbole": "BRK-B",
+      "montant": 68.0,
+      "prix": 588.239990234375,
+      "atr": 11.376429966517858,
+      "raison": "signal d'entrée de cassure_courte",
+      "statut": "en_attente",
+      "texte": "🟢 [cassure] <b>Acheter 68,00 $ de BRK-B (Berkshire Hathaway)</b> (≈ 0,1156 action à ~588,24 $)\n   🛑 Stop de sécurité ~554,11 $ : -5,80 %, soit -3,95 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 15,
+      "test": false
+    },
+    {
+      "id": "1112-4",
+      "jour": "2026-11-12",
+      "poche": "cassure",
+      "symbole": "KO",
+      "montant": 68.0,
+      "prix": 97.56999969482422,
+      "atr": 1.9407130650111608,
+      "raison": "signal d'entrée de cassure_courte",
+      "statut": "en_attente",
+      "texte": "🟢 [cassure] <b>Acheter 68,00 $ de KO (Coca-Cola Company (The))</b> (≈ 0,6969 action à ~97,57 $)\n   🛑 Stop de sécurité ~91,75 $ : -5,96 %, soit -4,06 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 16,
+      "test": false
+    },
+    {
+      "id": "1112-5",
+      "jour": "2026-11-12",
+      "poche": "cassure",
+      "symbole": "VZ",
+      "montant": 68.0,
+      "prix": 46.599998474121094,
+      "atr": 1.2314286913190569,
+      "raison": "signal d'entrée de cassure_courte",
+      "statut": "en_attente",
+      "texte": "🟢 [cassure] <b>Acheter 68,00 $ de VZ (Verizon)</b> (≈ 1,4592 action à ~46,60 $)\n   🛑 Stop de sécurité ~42,91 $ : -7,92 %, soit -5,38 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 17,
+      "test": false
     }
   ]
 }
