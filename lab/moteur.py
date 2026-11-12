@@ -9,6 +9,7 @@ Règles de simulation (les mêmes que le futur bot) :
     et à chaque vente : `frais` = 0,001 veut dire 0,10 % par côté ;
   - actions entières, ou fractions d'actions avec `fractions=True` (au moins 1 $ par ordre),
     jamais de levier ni de vente à découvert ;
+  - take profit exceptionnel en option (`tp_pct`, par ex. 0.20 = vendre dès +20 %) ;
   - stop loss / take profit en option (`sl_atr`, `tp_atr`, en multiples de l'ATR 14 jours calculé
     le soir de la décision) : fixés au prix d'achat, actifs À PARTIR DU LENDEMAIN de l'achat
     (comme le robot : pas d'aller-retour dans la journée). Si l'ouverture saute le niveau, la vente
@@ -53,7 +54,7 @@ def _matrices(donnees, strategie):
 
 
 def backtest(donnees, strategie, capital=100_000.0, max_positions=5, frais=0.001, debut="2006-01-01",
-             fractions=False, sl_atr=None, tp_atr=None):
+             fractions=False, sl_atr=None, tp_atr=None, tp_pct=None):
     """Retourne {"equity": Series, "exposition": Series, "trades": DataFrame, "ouvertes": list}."""
     idx, symboles, O, C, E, S, X, H, L, A = _matrices(donnees, strategie)
     derniere = pd.DataFrame(C).ffill().to_numpy()  # dernier cours connu, pour valoriser
@@ -117,6 +118,8 @@ def backtest(donnees, strategie, capital=100_000.0, max_positions=5, frais=0.001
                     pos["sl"] = px - sl_atr * atr_veille
                 if tp_atr:
                     pos["tp"] = px + tp_atr * atr_veille
+            if tp_pct:
+                pos["tp"] = px * (1 + tp_pct)
             positions[j] = pos
         a_acheter = []
 

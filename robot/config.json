@@ -34,5 +34,11 @@
     "compte_max_usd": 10000,
     "compte_fictif_uniquement": true
   },
-  "stop_atr": 3
+  "stop_atr": 3,
+  "paliers_alerte_vente_pct": [
+    10,
+    15,
+    20,
+    30
+  ]
 }

@@ -7,6 +7,7 @@ import urllib.parse
 import urllib.request
 
 URL_FICTIF = "https://paper-api.alpaca.markets/v2"
+URL_DONNEES = "https://data.alpaca.markets"     # cours et actualités (gratuits, flux IEX)
 
 
 class AlpacaErreur(Exception):
@@ -28,8 +29,8 @@ class Alpaca:
             raise AlpacaErreur("clés Alpaca absentes : secrets ALPACA_API_KEY et ALPACA_SECRET_KEY")
         self.url = url
 
-    def _appel(self, methode, chemin, params=None, corps=None):
-        url = self.url + chemin
+    def _appel(self, methode, chemin, params=None, corps=None, base=None):
+        url = (base or self.url) + chemin
         if params:
             url += "?" + urllib.parse.urlencode(params)
         donnees = json.dumps(corps).encode() if corps is not None else None
@@ -42,6 +43,21 @@ class Alpaca:
                 return json.loads(texte) if texte else None
         except urllib.error.HTTPError as e:
             raise AlpacaErreur("%s %s -> HTTP %s : %s" % (methode, chemin, e.code, e.read().decode()[:300]))
+
+    def derniers_prix(self, symboles):
+        """{symbole: dernier prix échangé} en direct (flux gratuit IEX)."""
+        if not symboles:
+            return {}
+        rep = self._appel("GET", "/v2/stocks/trades/latest", {
+            "symbols": ",".join(symbole_alpaca(s) for s in symboles), "feed": "iex"}, base=URL_DONNEES)
+        return {k.replace(".", "-"): float(v["p"]) for k, v in (rep or {}).get("trades", {}).items()}
+
+    def actualites(self, symbole, n=3):
+        """Les derniers titres d'actualité d'une action : [(date, titre, source, lien)]."""
+        rep = self._appel("GET", "/v1beta1/news", {"symbols": symbole_alpaca(symbole), "limit": n,
+                                                    "sort": "desc"}, base=URL_DONNEES)
+        return [(a.get("created_at", "")[:10], a.get("headline", ""), a.get("source", ""), a.get("url", ""))
+                for a in (rep or {}).get("news", [])]
 
     def compte(self):
         return self._appel("GET", "/account")

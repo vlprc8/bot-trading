@@ -2,19 +2,16 @@ name: Robot
 
 on:
   schedule:
-    # GitHub retarde souvent les tâches programmées pile à l'heure : minutes décalées + passages de secours
-    - cron: "17 6 * * 1-5"         # matin : 7h17 Paris en hiver -> propositions d'achat
-    - cron: "47 6 * * 1-5"         # matin, secours (ne refait rien si déjà passé)
-    - cron: "23 7 * * 1-5"         # matin, secours
-    - cron: "53 7 * * 1-5"         # matin, secours
-    - cron: "3-59/10 7-14 * * 1-5" # toutes les 10 min jusqu'à l'ouverture -> lit tes Oui / Non
-    - cron: "37 21 * * 1-5"        # soir : après la clôture de New York -> bilan
+    # Un passage « journee » démarre chaque heure (minute 17, que GitHub retarde moins que l'heure pile).
+    # Chaque passage dure jusqu'à 5h45 (limite GitHub : 6 h) ; le suivant attend son tour et prend le relais.
+    # Matin (propositions), écoute de tes Oui / Non en direct, surveillance +20 % en séance, bilan du soir.
+    - cron: "17 6-21 * * 1-5"
   workflow_dispatch:
     inputs:
       mode:
         description: "Que faire ?"
         type: choice
-        options: [etat, exemple, validation, connexion, matin, soir, stop]
+        options: [journee, etat, exemple, validation, connexion, matin, soir, stop]
         default: etat
       attente:
         description: "validation : écouter Telegram pendant N secondes"
@@ -46,12 +43,8 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event.schedule }}" = "37 21 * * 1-5" ]; then
-            echo "mode=soir" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event.schedule }}" = "3-59/10 7-14 * * 1-5" ]; then
-            echo "mode=validation" >> "$GITHUB_OUTPUT"
           else
-            echo "mode=matin" >> "$GITHUB_OUTPUT"
+            echo "mode=journee" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Lancer le robot (${{ steps.mode.outputs.mode }})

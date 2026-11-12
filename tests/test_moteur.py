@@ -100,6 +100,13 @@ class StopEtObjectif(unittest.TestCase):
         t = self.lancer(self.donnees(o, h, l, c))
         self.assertEqual((t["prix_sortie"], t["motif"]), (104.0, "take profit"))
 
+    def test_objectif_exceptionnel_en_pourcentage(self):
+        o, h, l, c = self.base()
+        h[18] = 121.0                        # +21 % dans la journée : vente à +20 %, soit 120
+        t = moteur.backtest(self.donnees(o, h, l, c), SignalFixe(15, jours_max=10), capital=1000, max_positions=1,
+                            frais=0.0, debut="2000-01-01", fractions=True, sl_atr=3, tp_pct=0.20)["trades"].iloc[0]
+        self.assertEqual((t["prix_sortie"], t["motif"]), (120.0, "take profit"))
+
     def test_rien_le_jour_de_l_achat_et_stop_avant_objectif(self):
         o, h, l, c = self.base()
         l[16], h[16] = 90.0, 110.0           # jour de l'achat : ignoré

@@ -9,7 +9,33 @@
       "perte_moyenne": -0.0322,
       "pire": -0.1719,
       "jours_moyens": 6.8,
-      "stop_touche": 0.0522
+      "stop_touche": 0.0522,
+      "paliers": {
+        "10": {
+          "trades": 118,
+          "part": 0.0933,
+          "final_moyen": 0.1355,
+          "final_sous_palier": 0.4407
+        },
+        "15": {
+          "trades": 57,
+          "part": 0.0451,
+          "final_moyen": 0.1951,
+          "final_sous_palier": 0.4386
+        },
+        "20": {
+          "trades": 33,
+          "part": 0.0261,
+          "final_moyen": 0.2478,
+          "final_sous_palier": 0.4545
+        },
+        "30": {
+          "trades": 16,
+          "part": 0.0126,
+          "final_moyen": 0.3112,
+          "final_sous_palier": 0.5
+        }
+      }
     },
     "rebond": {
       "trades": 1777,
@@ -18,7 +44,27 @@
       "perte_moyenne": -0.03,
       "pire": -0.3034,
       "jours_moyens": 3.2,
-      "stop_touche": 0.0658
+      "stop_touche": 0.0658,
+      "paliers": {
+        "10": {
+          "trades": 28,
+          "part": 0.0158,
+          "final_moyen": 0.0982,
+          "final_sous_palier": 0.5357
+        },
+        "15": {
+          "trades": 8,
+          "part": 0.0045,
+          "final_moyen": 0.1424,
+          "final_sous_palier": 0.625
+        },
+        "20": {
+          "trades": 1,
+          "part": 0.0006,
+          "final_moyen": 0.1856,
+          "final_sous_palier": 1.0
+        }
+      }
     },
     "tournant": {
       "trades": 95,
@@ -27,7 +73,8 @@
       "perte_moyenne": -0.0198,
       "pire": -0.0652,
       "jours_moyens": 4.7,
-      "stop_touche": 0.1053
+      "stop_touche": 0.1053,
+      "paliers": {}
     }
   }
 }

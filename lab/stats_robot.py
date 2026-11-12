@@ -38,7 +38,20 @@ def main():
         r = moteur.backtest(sous, strat, capital=1000, max_positions=poche["max_positions"], frais=0.001,
                             fractions=True, sl_atr=sl)
         t = r["trades"]
-        out["poches"][poche["nom"]] = stats_trades(t[t["sortie"] >= pd.Timestamp("2019-01-01")])
+        t = t[t["sortie"] >= pd.Timestamp("2019-01-01")].copy()
+        out["poches"][poche["nom"]] = stats_trades(t)
+        # Pour les demandes de vente en séance : quand un trade a touché +X %, comment a-t-il fini
+        # si on l'a laissé suivre sa règle de sortie normale ?
+        t["plus_haut"] = [float(sous[r_.symbole]["high"].loc[r_.entree:r_.sortie].max()) / r_.prix_entree - 1
+                          for r_ in t.itertuples()]
+        paliers = {}
+        for niv in config.get("paliers_alerte_vente_pct", []):
+            sel = t[t["plus_haut"] >= niv / 100.0]
+            if len(sel):
+                paliers[str(niv)] = {"trades": int(len(sel)), "part": round(len(sel) / len(t), 4),
+                                     "final_moyen": round(float(sel["rendement"].mean()), 4),
+                                     "final_sous_palier": round(float((sel["rendement"] < niv / 100.0).mean()), 4)}
+        out["poches"][poche["nom"]]["paliers"] = paliers
         print(poche["nom"], out["poches"][poche["nom"]])
     with open(os.path.join(RACINE, "robot", "statistiques.json"), "w", encoding="utf-8") as fh:
         json.dump(out, fh, ensure_ascii=False, indent=2)

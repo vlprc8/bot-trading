@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Le robot de trading, compte FICTIF Alpaca, notifications Telegram.
 
+    python lancer_robot.py journee     # la journée entière : matin, écoute, surveillance +20 %, bilan
     python lancer_robot.py connexion   # relie Telegram (trouve ton chat) et vérifie Alpaca
     python lancer_robot.py matin       # 8h-9h : décide, envoie les ventes et les stops, PROPOSE les achats
     python lancer_robot.py validation  # toutes les 10 min jusqu'à l'ouverture : lit tes Oui / Non
@@ -40,8 +41,10 @@ COLONNES_JOURNAL = ["date_sortie", "poche", "symbole", "qte", "date_entree", "pr
 AIDE = ("<b>Comment ça marche</b>\n"
         "• Vers 8h-9h (heure de Paris), le robot t'envoie ses propositions d'achat avec deux boutons : "
         "<b>✅ Oui</b> ou <b>❌ Non</b>. Tu as jusqu'à l'ouverture de Wall Street (15h30) pour répondre. "
-        "Ta réponse est lue dans les 10 minutes et l'ordre apparaît alors dans Alpaca.\n"
+        "Ta réponse est lue en quelques secondes et l'ordre apparaît alors dans Alpaca.\n"
         "• Les ventes et les stops de sécurité sont automatiques, pour protéger le capital.\n"
+        "• Pendant la séance, si une de tes actions monte fort (+10 %, +15 %, +20 %, +30 %), le robot "
+        "te demande si tu veux vendre tout de suite. C'est toi qui décides.\n"
         "• Le soir vers 22h30, bilan de la journée.\n\n"
         "<b>Commandes</b> : /etat (portefeuille), /stop (tout vendre et mettre en pause), "
         "/reprendre, /aide")
@@ -117,6 +120,23 @@ def cours(symboles, jours=500):
         df.index = pd.to_datetime(df.index).tz_localize(None).normalize()
         out[s] = df.astype(float)
     return out
+
+
+def prochains_resultats(symbole):
+    """Date des prochains résultats trimestriels (Yahoo Finance), ou None si inconnue."""
+    try:
+        import yfinance as yf
+        cal = yf.Ticker(symbole).calendar or {}
+        dates = cal.get("Earnings Date") or []
+        futures = sorted(d for d in dates if d >= datetime.date.today())
+        return futures[0] if futures else None
+    except Exception as exc:
+        print("résultats %s : %s" % (symbole, exc))
+        return None
+
+
+def echapper(t):
+    return (t or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 # ---------------------------------------------------------------- le robot
@@ -212,9 +232,13 @@ class Robot:
             return info("Déjà traitée : %s." % prop["statut"])
         if not accord:
             prop["statut"] = "refusee"
-            self.tg.modifier(prop["message_id"], prop["texte"] + "\n\n❌ <b>Refusé</b> : aucun ordre.")
-            return info("Refusé : aucun ordre.")
+            suite = "on garde la position, la règle de sortie normale continue." if prop.get("genre") == "vente" \
+                else "aucun ordre."
+            self.tg.modifier(prop["message_id"], prop["texte"] + "\n\n❌ <b>Refusé</b> : " + suite)
+            return info("Refusé : " + suite)
         ouvert = self.alpaca.horloge()["is_open"]
+        if prop.get("genre") == "vente":
+            return self.accepter_vente(prop, ouvert, info)
         if ouvert and not prop.get("test"):
             prop["statut"] = "expiree"
             self.tg.modifier(prop["message_id"], prop["texte"] + "\n\n⌛ <b>Trop tard</b> : la bourse a ouvert, "
@@ -237,12 +261,18 @@ class Robot:
                          "Alpaca, %s. Visible dans Alpaca, onglet Orders." % (dollars(montant), quand))
         info("✅ Ordre envoyé à Alpaca")
 
-    def expirer_propositions(self, jour, ouvert):
+    def expirer_propositions(self, jour, ouvert, fin_de_seance=False):
+        tenus = {(p["poche"], p["symbole"]) for p in self.etat["positions"]}
         for p in self.etat["propositions"]:
             if p["statut"] != "en_attente":
                 continue
             vieille = p["jour"] < str(jour)
-            if vieille or (ouvert and not p.get("test")):
+            if p.get("genre") == "vente":
+                if vieille or fin_de_seance or (p["poche"], p["symbole"]) not in tenus:
+                    p["statut"] = "expiree"
+                    self.tg.modifier(p["message_id"], p["texte"] + "\n\n⌛ <b>Expirée</b> : la séance est finie ou "
+                                     "la position est déjà vendue. Rien n'a changé.")
+            elif vieille or (ouvert and not p.get("test")):
                 p["statut"] = "expiree"
                 self.tg.modifier(p["message_id"], p["texte"] + "\n\n⌛ <b>Expirée</b> : pas de réponse avant "
                                  "l'ouverture, aucun ordre.")
@@ -256,9 +286,9 @@ class Robot:
         texte = self.texte_achat(poche, symbole, montant, prix, atr, stats_de=stats_de, sortie=sortie)
         texte += "\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30)." if not test else \
             "\n\n<b>C'est un TEST</b> : appuie sur Oui pour voir l'ordre arriver dans Alpaca."
-        prop = {"id": pid, "jour": str(jour), "poche": poche["nom"], "symbole": symbole, "montant": montant,
-                "prix": prix, "atr": atr, "raison": raison, "statut": "en_attente", "texte": texte,
-                "message_id": None, "test": test}
+        prop = {"id": pid, "jour": str(jour), "genre": "achat", "poche": poche["nom"], "symbole": symbole,
+                "montant": montant, "prix": prix, "atr": atr, "raison": raison, "statut": "en_attente",
+                "texte": texte, "message_id": None, "test": test}
         self.etat["propositions"].append(prop)
         self.a_proposer.append(prop)
         return prop
@@ -359,6 +389,10 @@ class Robot:
             lignes.append("   🛑 Stop de sécurité ~%s : %s, soit %s au pire au prix du stop" % (
                 dollars(stop), pct(stop / prix - 1), dollars(montant * (stop / prix - 1), True)))
         lignes.append("   🚪 Sortie prévue : %s" % (sortie or strat.sortie_texte))
+        paliers = self.config.get("paliers_alerte_vente_pct")
+        if paliers:
+            lignes.append("   📈 Si elle monte fort en séance (%s), je te demande si tu veux vendre" % (
+                ", ".join("+%d %%" % x for x in paliers)))
         st = self.stats.get(stats_de or poche["nom"])
         if st and st.get("trades"):
             lignes.append("   📊 Historique 2019-2026 (%d trades) : %s gagnants ; quand ça gagne %s (≈ %s), "
@@ -367,7 +401,30 @@ class Robot:
                               pct(st["gain_moyen"]), dollars(montant * st["gain_moyen"], True),
                               pct(st["perte_moyenne"]), dollars(montant * st["perte_moyenne"], True),
                               str(st["jours_moyens"]).replace(".", ",")))
+        lignes += self.texte_actualite(symbole)
         return "\n".join(lignes)
+
+    def texte_actualite(self, symbole):
+        """Résultats trimestriels à venir et derniers titres : de l'information pour décider, pas un signal."""
+        lignes = []
+        d = prochains_resultats(symbole)
+        if d:
+            jours = (d - datetime.date.today()).days
+            alerte = "⚠️" if jours <= 14 else "🗓️"
+            lignes.append("   %s Prochains résultats trimestriels : %s%s" % (
+                alerte, d.strftime("%d/%m/%Y"),
+                " : <b>pendant la durée probable du trade</b>, le cours peut sauter d'un coup" if jours <= 14 else ""))
+        try:
+            actus = self.alpaca.actualites(symbole, 2)
+        except Exception as exc:
+            print("actualités %s : %s" % (symbole, exc))
+            actus = []
+        if actus:
+            lignes.append("   📰 Dernières actus (en anglais) :")
+            for date_, titre_, source, lien in actus:
+                lignes.append('      • %s/%s : <a href="%s">%s</a>' % (
+                    date_[8:10], date_[5:7], echapper(lien), echapper(titre_[:140])))
+        return lignes
 
     # -- les passages
     def matin(self, force=False):
@@ -477,6 +534,127 @@ class Robot:
                 break
         self.expirer_propositions(jour, self.alpaca.horloge()["is_open"])
 
+    # -- la journée complète : un seul passage qui tourne jusqu'à 5h45 (limite GitHub : 6 h)
+    def journee(self, duree_max=5 * 3600 + 45 * 60):
+        debut = time.time()
+        horloge, jour = self.aujourdhui_ny()
+        sessions = self.sessions(jour - datetime.timedelta(days=10), jour + datetime.timedelta(days=40))
+        if jour not in sessions:
+            print("Bourse fermée aujourd'hui (%s)." % jour)
+            return
+        if self.etat.get("dernier_soir") == str(jour):
+            print("Journée déjà terminée.")
+            return
+        if self.etat.get("dernier_matin") != str(jour) and not horloge["is_open"]:
+            self.matin()
+            self.envoyer()
+            self.sauver()
+        derniere_verif = 0
+        ouverte_vue = horloge["is_open"]
+        while time.time() - debut < duree_max:
+            if self.lire_commandes(attente=20):
+                self.envoyer()
+                self.sauver()
+            if time.time() - derniere_verif < 60:
+                continue
+            derniere_verif = time.time()
+            horloge = self.alpaca.horloge()
+            self.reconcilier()
+            if horloge["is_open"]:
+                ouverte_vue = True
+                self.expirer_propositions(jour, True)
+                self.surveiller_hausse(jour)
+            elif ouverte_vue or pd.Timestamp(horloge["timestamp"]).tz_convert("America/New_York").hour >= 16:
+                self.soir()          # la séance est finie : bilan, et fin de journée
+                break
+            self.envoyer()
+            self.sauver()
+        self.envoyer()
+
+    def surveiller_hausse(self, jour):
+        """En séance : si une position a pris +10 %, +15 %, +20 %... je te demande si tu veux vendre.
+        Une seule demande par palier ; si tu dis non, je te redemande au palier suivant."""
+        paliers = sorted(self.config.get("paliers_alerte_vente_pct") or [])
+        if not paliers:
+            return
+        en_vente = {(o["poche"], o["symbole"]) for o in self.etat["ordres"] if o["cote"] == "sell"
+                    and o.get("genre") != "stop"}
+        a_voir = [p for p in self.etat["positions"] if (p["poche"], p["symbole"]) not in en_vente]
+        if not a_voir:
+            return
+        try:
+            prix = self.alpaca.derniers_prix(sorted({p["symbole"] for p in a_voir}))
+        except Exception as exc:
+            print("prix en direct : %s" % exc)
+            return
+        for p in a_voir:
+            px = prix.get(p["symbole"])
+            if not px:
+                continue
+            gain = px / p["prix_entree"] - 1
+            atteints = [x for x in paliers if gain >= x / 100.0 and x not in p.get("paliers_alertes", [])]
+            if not atteints:
+                continue
+            palier = max(atteints)
+            p.setdefault("paliers_alertes", []).extend(x for x in paliers if x <= palier)
+            self.proposer_vente(p, px, palier, jour)
+
+    def proposer_vente(self, pos, px, palier, jour):
+        n = len([p for p in self.etat["propositions"] if p["jour"] == str(jour)]) + 1
+        pid = "%s-%d" % (jour.strftime("%m%d"), n)
+        gain = px / pos["prix_entree"] - 1
+        poche = self.poche(pos["poche"]) or {}
+        strat = decisions.STRATEGIES.get(poche.get("strategie", ""))
+        lignes = ["📈 <b>%s a pris %s</b> depuis l'achat" % (avec_nom(pos["symbole"]), pct(gain)),
+                  "   Acheté %s le %s, maintenant ~%s : soit %s sur ta position" % (
+                      dollars(pos["prix_entree"]), pos["date_entree"], dollars(px),
+                      dollars((px - pos["prix_entree"]) * pos["qte"], True))]
+        st = (self.stats.get(pos["poche"]) or {}).get("paliers", {}).get(str(palier))
+        if st:
+            lignes.append("   📊 Historique 2019-2026 [%s] : %d trades ont touché +%d %%. En les laissant suivre la "
+                          "règle de sortie, ils ont fini en moyenne à %s, et %.0f %% ont fini sous +%d %%." % (
+                              pos["poche"], st["trades"], palier, pct(st["final_moyen"]),
+                              100 * st["final_sous_palier"], palier))
+        if strat:
+            lignes.append("   🚪 Si tu gardes : %s" % strat.sortie_texte)
+        lignes.append("\n<b>Je vends maintenant ?</b> (au prix du moment ; sans réponse, rien ne change)")
+        texte = "\n".join(lignes)
+        prop = {"id": pid, "jour": str(jour), "genre": "vente", "poche": pos["poche"], "symbole": pos["symbole"],
+                "qte": pos["qte"], "prix": px, "palier": palier, "statut": "en_attente", "texte": texte,
+                "message_id": None, "test": False}
+        self.etat["propositions"].append(prop)
+        self.a_proposer.append(prop)
+
+    def accepter_vente(self, prop, ouvert, info):
+        pos = next((p for p in self.etat["positions"]
+                    if p["poche"] == prop["poche"] and p["symbole"] == prop["symbole"]), None)
+        if pos is None or any(o["cote"] == "sell" and o.get("genre") != "stop" and o["symbole"] == prop["symbole"]
+                              and o["poche"] == prop["poche"] for o in self.etat["ordres"]):
+            prop["statut"] = "expiree"
+            self.tg.modifier(prop["message_id"], prop["texte"] + "\n\n⌛ Position déjà vendue ou en cours de vente.")
+            return info("Déjà vendue.")
+        # le stop de sécurité du jour bloque les actions : on l'annule d'abord
+        for o in [o for o in self.etat["ordres"] if o.get("genre") == "stop" and o["symbole"] == pos["symbole"]
+                  and o["poche"] == pos["poche"]]:
+            try:
+                self.alpaca.annuler(o["id"])
+            except Exception as exc:
+                print("annulation du stop %s : %s" % (o["id"], exc))
+            for _ in range(10):
+                if self.alpaca.ordre(o["id"]).get("status") in ("canceled", "filled", "expired"):
+                    break
+                time.sleep(1)
+        self.reconcilier()           # au cas où le stop aurait été exécuté entre-temps
+        if pos not in self.etat["positions"]:
+            prop["statut"] = "expiree"
+            return info("Le stop a été exécuté entre-temps.")
+        self.envoyer_ordre(pos["poche"], pos["symbole"], "sell", "vente demandée à +%d %%" % prop["palier"],
+                           prop["jour"], "vente", qte=pos["qte"])
+        prop["statut"] = "acceptee"
+        quand = "exécution immédiate au prix du moment" if ouvert else "la bourse est fermée : vente à l'ouverture"
+        self.tg.modifier(prop["message_id"], prop["texte"] + "\n\n✅ <b>Vente envoyée à Alpaca</b> : %s." % quand)
+        info("✅ Vente envoyée à Alpaca")
+
     def exemple(self):
         """Une proposition de TEST à 5 $, pour essayer les boutons et voir l'ordre arriver dans Alpaca."""
         _, jour = self.aujourdhui_ny()
@@ -495,7 +673,7 @@ class Robot:
         horloge, jour = self.aujourdhui_ny()
         self.reconcilier()
         self.lire_commandes()
-        self.expirer_propositions(jour, True)
+        self.expirer_propositions(jour, True, fin_de_seance=not horloge["is_open"])
         if self.etat.get("dernier_soir") == str(jour):
             return
         sessions = self.sessions(jour - datetime.timedelta(days=5), jour)
@@ -561,7 +739,7 @@ class Robot:
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Robot de trading (compte fictif).")
-    ap.add_argument("mode", choices=["connexion", "matin", "validation", "exemple", "soir", "etat", "stop"])
+    ap.add_argument("mode", choices=["journee", "connexion", "matin", "validation", "exemple", "soir", "etat", "stop"])
     ap.add_argument("--force", action="store_true", help="matin : passer même si déjà fait ou marché ouvert")
     ap.add_argument("--attente", type=int, default=0, help="validation : écouter Telegram N secondes")
     a = ap.parse_args(argv)
@@ -571,6 +749,8 @@ def main(argv=None):
             robot.connexion()
         elif a.mode == "matin":
             robot.matin(force=a.force)
+        elif a.mode == "journee":
+            robot.journee()
         elif a.mode == "validation":
             robot.validation(attente=a.attente)
         elif a.mode == "exemple":
