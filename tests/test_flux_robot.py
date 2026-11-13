@@ -261,6 +261,17 @@ class Flux(unittest.TestCase):
         self.passage("matin", "2026-06-29T10:00:00-04:00")
         self.assertEqual(self.alpaca.ordres, {})
 
+    def test_matin_en_retard_pas_d_achat_mais_un_message(self):
+        self.alpaca.ouvert = True
+        self.alpaca.maintenant = "2026-06-29T10:00:00-04:00"
+        r = lancer_robot.Robot()
+        r.matin(retard=True)
+        r.envoyer()
+        r.sauver()
+        self.assertEqual(self.alpaca.ordres, {})          # aucun achat proposé ni passé
+        self.assertIn("Passage en retard", self.tg.envoyes[-1])
+        self.assertIn("1 signal", self.tg.envoyes[-1])
+
 
 if __name__ == "__main__":
     unittest.main()

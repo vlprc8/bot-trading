@@ -427,7 +427,9 @@ class Robot:
         return lignes
 
     # -- les passages
-    def matin(self, force=False):
+    def matin(self, force=False, retard=False):
+        """retard=True : GitHub a lancé le robot après l'ouverture. On rattrape ce qui protège (ventes sur
+        signal, stops de sécurité), mais aucun nouvel achat : ils doivent partir à l'ouverture."""
         horloge, jour = self.aujourdhui_ny()
         self.reconcilier()
         self.lire_commandes()
@@ -439,7 +441,7 @@ class Robot:
         if self.etat.get("dernier_matin") == str(jour) and not force:
             print("Déjà passé ce matin.")
             return
-        if horloge["is_open"] and not force:
+        if horloge["is_open"] and not force and not retard:
             self.dire("⏰ Passage du matin trop tard : la bourse est déjà ouverte. Aucun ordre aujourd'hui "
                       "(les ordres doivent partir à l'ouverture, comme dans le backtest).")
             return
@@ -489,7 +491,7 @@ class Robot:
             for s_, montant, prix, raison, atr in achats:
                 achats_prevus.append((poche, s_, montant, prix, raison, atr))
         cash = float(compte["cash"]) * 0.98
-        for poche, s_, montant, prix, raison, atr in achats_prevus:
+        for poche, s_, montant, prix, raison, atr in ([] if retard else achats_prevus):
             montant = round(min(montant, cash), 2)
             if montant < 1:
                 continue
@@ -507,12 +509,18 @@ class Robot:
             except Exception as exc:
                 self.dire("⚠️ Stop de sécurité non posé sur %s : %s" % (p["symbole"], str(exc)[:200]))
         lignes = ["☀️ <b>Le point du %s</b>" % jour.strftime("%d/%m"), "Capital : %s" % dollars(equity)]
+        if retard:
+            lignes.insert(1, "⏰ <b>Passage en retard</b> : GitHub n'a pas lancé le robot avant l'ouverture. Je "
+                             "rattrape les ventes et les stops de sécurité maintenant ; pas de nouvel achat "
+                             "aujourd'hui (%d signal(s) laissé(s) de côté)." % len(achats_prevus))
         if ventes_txt:
-            lignes.append("<b>Ventes automatiques</b> (exécution à l'ouverture, 15h30) :\n" + "\n".join(ventes_txt))
+            lignes.append("<b>Ventes automatiques</b> (%s) :\n" % ("exécution maintenant, au prix du marché" if retard
+                                                                    else "exécution à l'ouverture, 15h30")
+                          + "\n".join(ventes_txt))
         if self.a_proposer:
             lignes.append("👇 <b>%d proposition(s) d'achat</b> dans les messages suivants : réponds ✅ Oui ou "
                           "❌ Non avant 15h30." % len(self.a_proposer))
-        if not ventes_txt and not self.a_proposer:
+        if not ventes_txt and not self.a_proposer and not retard:
             lignes.append("Aucun signal aujourd'hui : on ne touche à rien.")
         if stops_txt:
             lignes.append("🛑 Stops de sécurité en place : " + ", ".join(stops_txt))
@@ -545,8 +553,12 @@ class Robot:
         if self.etat.get("dernier_soir") == str(jour):
             print("Journée déjà terminée.")
             return
-        if self.etat.get("dernier_matin") != str(jour) and not horloge["is_open"]:
-            self.matin()
+        if self.etat.get("dernier_matin") != str(jour):
+            heure_ny = pd.Timestamp(horloge["timestamp"]).tz_convert("America/New_York")
+            if horloge["is_open"]:
+                self.matin(retard=True)          # GitHub nous a lancés trop tard : on rattrape l'essentiel
+            elif heure_ny.hour < 9 or (heure_ny.hour == 9 and heure_ny.minute < 30):
+                self.matin()
             self.envoyer()
             self.sauver()
         derniere_verif = 0
