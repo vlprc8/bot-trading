@@ -563,6 +563,7 @@ class Robot:
             self.sauver()
         derniere_verif = 0
         ouverte_vue = horloge["is_open"]
+        self.relais = True                   # vrai tant que la journée n'est pas terminée
         while time.time() - debut < duree_max:
             if self.lire_commandes(attente=20):
                 self.envoyer()
@@ -578,6 +579,7 @@ class Robot:
                 self.surveiller_hausse(jour)
             elif ouverte_vue or pd.Timestamp(horloge["timestamp"]).tz_convert("America/New_York").hour >= 16:
                 self.soir()          # la séance est finie : bilan, et fin de journée
+                self.relais = False
                 break
             self.envoyer()
             self.sauver()
@@ -749,6 +751,9 @@ class Robot:
         self.dire(AIDE)
 
 
+RELAIS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "relais.flag")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Robot de trading (compte fictif).")
     ap.add_argument("mode", choices=["journee", "connexion", "matin", "validation", "exemple", "soir", "etat", "stop"])
@@ -763,6 +768,9 @@ def main(argv=None):
             robot.matin(force=a.force)
         elif a.mode == "journee":
             robot.journee()
+            if getattr(robot, "relais", False):
+                # la séance n'est pas finie : GitHub relance aussitôt un passage (fichier lu par le workflow)
+                open(RELAIS, "w").write("journee non terminée\n")
         elif a.mode == "validation":
             robot.validation(attente=a.attente)
         elif a.mode == "exemple":

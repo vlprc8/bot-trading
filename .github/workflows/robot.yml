@@ -23,6 +23,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write     # pour que le robot relance lui-même le passage suivant
 
 jobs:
   robot:
@@ -62,3 +63,9 @@ jobs:
           git add robot/
           git commit -m "Robot : ${{ steps.mode.outputs.mode }} du $(date -u +%Y-%m-%d)" || exit 0
           for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
+
+      - name: Passer le relais (la séance n'est pas finie)
+        if: always() && steps.mode.outputs.mode == 'journee' && hashFiles('relais.flag') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run robot.yml --ref main -f mode=journee
