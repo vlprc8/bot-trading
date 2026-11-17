@@ -1,6 +1,6 @@
 {
   "pause": false,
-  "decalage_telegram": 90854187,
+  "decalage_telegram": 90854189,
   "depart": {
     "date": "2026-11-12",
     "equity": 1000.0,
@@ -48,8 +48,93 @@
       "stop": 92.42
     }
   ],
-  "ordres": [],
-  "dernier_matin": "2026-11-16",
+  "ordres": [
+    {
+      "id": "67da9b49-83dc-49f9-a6bf-eb4d1a74487c",
+      "poche": "cassure",
+      "symbole": "GE",
+      "cote": "sell",
+      "genre": "vente",
+      "qte": 0.200035305,
+      "montant": null,
+      "atr": null,
+      "raison": "signal de sortie de cassure_courte",
+      "date": "2026-11-17"
+    },
+    {
+      "id": "fed60ecf-6a47-4693-bf78-24dccc683152",
+      "poche": "cassure",
+      "symbole": "COST",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.062034105,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-17"
+    },
+    {
+      "id": "f4b60a55-9d83-4595-a471-b93f38c9a8fd",
+      "poche": "cassure",
+      "symbole": "VZ",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 1.446595744,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-17"
+    },
+    {
+      "id": "490193f7-3692-4bfc-9d20-f4b755c09ef0",
+      "poche": "cassure",
+      "symbole": "BRK-B",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.114663968,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-17"
+    },
+    {
+      "id": "fb3c7e25-dbb3-4b53-b3c0-3417f85959e6",
+      "poche": "cassure",
+      "symbole": "KO",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.692080618,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-17"
+    },
+    {
+      "id": "8cf78dd6-f940-4e27-9e2e-710041f48d7d",
+      "poche": "cassure",
+      "symbole": "PG",
+      "cote": "buy",
+      "genre": "achat",
+      "qte": null,
+      "montant": 67.81,
+      "atr": 3.4471435546875,
+      "raison": "signal d'entrée de cassure_courte",
+      "date": "2026-11-17"
+    },
+    {
+      "id": "65a4e37a-0ec8-4117-9ab1-b43f741b79e9",
+      "poche": "rebond",
+      "symbole": "AMZN",
+      "cote": "buy",
+      "genre": "achat",
+      "qte": null,
+      "montant": 65.82,
+      "atr": 11.031425476074219,
+      "raison": "signal d'entrée de rebond_court",
+      "date": "2026-11-17"
+    }
+  ],
+  "dernier_matin": "2026-11-17",
   "dernier_soir": "2026-11-16",
   "propositions": [
     {
@@ -134,6 +219,36 @@
       "statut": "acceptee",
       "texte": "🟢 [cassure] <b>Acheter 68,00 $ de VZ (Verizon)</b> (≈ 1,4592 action à ~46,60 $)\n   🛑 Stop de sécurité ~42,91 $ : -7,92 %, soit -5,38 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,71 $), quand ça perd -3,22 % (≈ -2,19 $) ; durée moyenne 6,8 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 17,
+      "test": false
+    },
+    {
+      "id": "1117-1",
+      "jour": "2026-11-17",
+      "genre": "achat",
+      "poche": "cassure",
+      "symbole": "PG",
+      "montant": 67.81,
+      "prix": 173.02000427246094,
+      "atr": 3.4471435546875,
+      "raison": "signal d'entrée de cassure_courte",
+      "statut": "acceptee",
+      "texte": "🟢 [cassure] <b>Acheter 67,81 $ de PG (Procter & Gamble)</b> (≈ 0,3919 action à ~173,02 $)\n   🛑 Stop de sécurité ~162,68 $ : -5,98 %, soit -4,05 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,70 $), quand ça perd -3,22 % (≈ -2,18 $) ; durée moyenne 6,8 jours\n   🗓️ Prochains résultats trimestriels : 21/01/2027\n   📰 Dernières actus (en anglais) :\n      • 16/11 : <a href=\"https://www.globenewswire.com/news-release/2026/11/16/3403866/0/en/national-advertising-review-board-will-refer-harry-s-unsupported-advertising-to-regulatory-authorities.html\">National Advertising Review Board Recommends Harry's Discontinue Certain Disparaging Claims Against Gillette</a>\n      • 16/11 : <a href=\"https://www.marketscreener.com/news/raymond-james-adjusts-price-target-on-procter-gamble-to-185-from-180-ce785eded081f720\">Raymond James Adjusts Price Target on Procter &amp; Gamble to $185 From $180</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 29,
+      "test": false
+    },
+    {
+      "id": "1117-2",
+      "jour": "2026-11-17",
+      "genre": "achat",
+      "poche": "rebond",
+      "symbole": "AMZN",
+      "montant": 65.82,
+      "prix": 257.75,
+      "atr": 11.031425476074219,
+      "raison": "signal d'entrée de rebond_court",
+      "statut": "acceptee",
+      "texte": "🟢 [rebond] <b>Acheter 65,82 $ de AMZN (Amazon)</b> (≈ 0,2554 action à ~257,75 $)\n   🛑 Stop de sécurité ~224,66 $ : -12,84 %, soit -8,45 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,40 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   📰 Dernières actus (en anglais) :\n      • 17/11 : <a href=\"https://www.prnewswire.com/news-releases/teamsters-rally-to-support-amazon-e-bike-delivery-drivers-illegally-fired-by-company-302941100.html\">Teamsters Organize Rally for Terminated Amazon Delivery Drivers in New York City</a>\n      • 16/11 : <a href=\"https://newsfilter.io/articles/instagram-now-lets-creators-add-amazon-affiliate-links-in-reels-and-feed-posts-2c6d5f0747ae5ab0a3c96b0d6d701a1b\">Instagram Launches Integration for Amazon Affiliate Links</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 30,
       "test": false
     }
   ]
