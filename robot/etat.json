@@ -25,14 +25,6 @@
     },
     {
       "poche": "cassure",
-      "symbole": "GE",
-      "qte": 0.200035305,
-      "date_entree": "2026-11-12",
-      "prix_entree": 339.89,
-      "stop": 304.31
-    },
-    {
-      "poche": "cassure",
       "symbole": "BRK-B",
       "qte": 0.114663968,
       "date_entree": "2026-11-12",
@@ -46,21 +38,25 @@
       "date_entree": "2026-11-12",
       "prix_entree": 98.24,
       "stop": 92.42
+    },
+    {
+      "poche": "cassure",
+      "symbole": "PG",
+      "qte": 0.395935529,
+      "date_entree": "2026-11-17",
+      "prix_entree": 171.24,
+      "stop": 160.9
+    },
+    {
+      "poche": "rebond",
+      "symbole": "AMZN",
+      "qte": 0.255424024,
+      "date_entree": "2026-11-17",
+      "prix_entree": 257.65,
+      "stop": 224.56
     }
   ],
   "ordres": [
-    {
-      "id": "67da9b49-83dc-49f9-a6bf-eb4d1a74487c",
-      "poche": "cassure",
-      "symbole": "GE",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.200035305,
-      "montant": null,
-      "atr": null,
-      "raison": "signal de sortie de cassure_courte",
-      "date": "2026-11-17"
-    },
     {
       "id": "fed60ecf-6a47-4693-bf78-24dccc683152",
       "poche": "cassure",
@@ -108,34 +104,10 @@
       "atr": null,
       "raison": "stop de sécurité",
       "date": "2026-11-17"
-    },
-    {
-      "id": "8cf78dd6-f940-4e27-9e2e-710041f48d7d",
-      "poche": "cassure",
-      "symbole": "PG",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 67.81,
-      "atr": 3.4471435546875,
-      "raison": "signal d'entrée de cassure_courte",
-      "date": "2026-11-17"
-    },
-    {
-      "id": "65a4e37a-0ec8-4117-9ab1-b43f741b79e9",
-      "poche": "rebond",
-      "symbole": "AMZN",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 65.82,
-      "atr": 11.031425476074219,
-      "raison": "signal d'entrée de rebond_court",
-      "date": "2026-11-17"
     }
   ],
   "dernier_matin": "2026-11-17",
-  "dernier_soir": "2026-11-16",
+  "dernier_soir": "2026-11-17",
   "propositions": [
     {
       "id": "1111-1",
