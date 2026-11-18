@@ -48,70 +48,9 @@
       "stop": 224.56
     }
   ],
-  "ordres": [
-    {
-      "id": "18810d17-c987-4d94-a19e-258e6527d178",
-      "poche": "cassure",
-      "symbole": "COST",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.062034105,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-18"
-    },
-    {
-      "id": "f2bd8344-6b16-42f8-95c1-5998a8c94565",
-      "poche": "cassure",
-      "symbole": "BRK-B",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.114663968,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-18"
-    },
-    {
-      "id": "2e5925cb-2347-47d1-ace3-8d4eed500a1a",
-      "poche": "cassure",
-      "symbole": "KO",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.692080618,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-18"
-    },
-    {
-      "id": "35c4eac5-0909-44b1-b3b2-09b92005a805",
-      "poche": "cassure",
-      "symbole": "PG",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.395935529,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-18"
-    },
-    {
-      "id": "4eab0ca9-bca7-470d-bab6-936df3949010",
-      "poche": "rebond",
-      "symbole": "AMZN",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.255424024,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-18"
-    }
-  ],
+  "ordres": [],
   "dernier_matin": "2026-11-18",
-  "dernier_soir": "2026-11-17",
+  "dernier_soir": "2026-11-18",
   "propositions": [
     {
       "id": "1111-1",
