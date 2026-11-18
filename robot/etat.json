@@ -58,7 +58,19 @@
   ],
   "ordres": [
     {
-      "id": "fed60ecf-6a47-4693-bf78-24dccc683152",
+      "id": "eb4c5e03-d5d5-42ef-9854-84fcb4d95de4",
+      "poche": "cassure",
+      "symbole": "VZ",
+      "cote": "sell",
+      "genre": "vente",
+      "qte": 1.446595744,
+      "montant": null,
+      "atr": null,
+      "raison": "signal de sortie de cassure_courte",
+      "date": "2026-11-18"
+    },
+    {
+      "id": "18810d17-c987-4d94-a19e-258e6527d178",
       "poche": "cassure",
       "symbole": "COST",
       "cote": "sell",
@@ -67,22 +79,10 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-17"
+      "date": "2026-11-18"
     },
     {
-      "id": "f4b60a55-9d83-4595-a471-b93f38c9a8fd",
-      "poche": "cassure",
-      "symbole": "VZ",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 1.446595744,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-17"
-    },
-    {
-      "id": "490193f7-3692-4bfc-9d20-f4b755c09ef0",
+      "id": "f2bd8344-6b16-42f8-95c1-5998a8c94565",
       "poche": "cassure",
       "symbole": "BRK-B",
       "cote": "sell",
@@ -91,10 +91,10 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-17"
+      "date": "2026-11-18"
     },
     {
-      "id": "fb3c7e25-dbb3-4b53-b3c0-3417f85959e6",
+      "id": "2e5925cb-2347-47d1-ace3-8d4eed500a1a",
       "poche": "cassure",
       "symbole": "KO",
       "cote": "sell",
@@ -103,10 +103,34 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-17"
+      "date": "2026-11-18"
+    },
+    {
+      "id": "35c4eac5-0909-44b1-b3b2-09b92005a805",
+      "poche": "cassure",
+      "symbole": "PG",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.395935529,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-18"
+    },
+    {
+      "id": "4eab0ca9-bca7-470d-bab6-936df3949010",
+      "poche": "rebond",
+      "symbole": "AMZN",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.255424024,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-18"
     }
   ],
-  "dernier_matin": "2026-11-17",
+  "dernier_matin": "2026-11-18",
   "dernier_soir": "2026-11-17",
   "propositions": [
     {
@@ -221,6 +245,66 @@
       "statut": "acceptee",
       "texte": "🟢 [rebond] <b>Acheter 65,82 $ de AMZN (Amazon)</b> (≈ 0,2554 action à ~257,75 $)\n   🛑 Stop de sécurité ~224,66 $ : -12,84 %, soit -8,45 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,40 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   📰 Dernières actus (en anglais) :\n      • 17/11 : <a href=\"https://www.prnewswire.com/news-releases/teamsters-rally-to-support-amazon-e-bike-delivery-drivers-illegally-fired-by-company-302941100.html\">Teamsters Organize Rally for Terminated Amazon Delivery Drivers in New York City</a>\n      • 16/11 : <a href=\"https://newsfilter.io/articles/instagram-now-lets-creators-add-amazon-affiliate-links-in-reels-and-feed-posts-2c6d5f0747ae5ab0a3c96b0d6d701a1b\">Instagram Launches Integration for Amazon Affiliate Links</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 30,
+      "test": false
+    },
+    {
+      "id": "1118-1",
+      "jour": "2026-11-18",
+      "genre": "achat",
+      "poche": "rebond",
+      "symbole": "HD",
+      "montant": 65.71,
+      "prix": 339.010009765625,
+      "atr": 10.499997820172991,
+      "raison": "signal d'entrée de rebond_court",
+      "statut": "en_attente",
+      "texte": "🟢 [rebond] <b>Acheter 65,71 $ de HD (Home Depot (The))</b> (≈ 0,1938 action à ~339,01 $)\n   🛑 Stop de sécurité ~307,51 $ : -9,29 %, soit -6,11 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   📰 Dernières actus (en anglais) :\n      • 17/11 : <a href=\"https://www.newswire.ca/news-releases/the-home-depot-announces-third-quarter-fiscal-2026-results-updates-fiscal-2026-guidance-846132573.html\">The Home Depot Reports Third Quarter Fiscal 2026 Results and Updates Guidance</a>\n      • 17/11 : <a href=\"https://www.prnewswire.com/news-releases/the-home-depot-names-richard-mcphail-as-ceo-effective-november-23-2026-302941068.html\">The Home Depot Announces Executive Leadership Changes</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 34,
+      "test": false
+    },
+    {
+      "id": "1118-2",
+      "jour": "2026-11-18",
+      "genre": "achat",
+      "poche": "rebond",
+      "symbole": "WFC",
+      "montant": 65.71,
+      "prix": 82.69000244140625,
+      "atr": 2.103193805205641,
+      "raison": "signal d'entrée de rebond_court",
+      "statut": "en_attente",
+      "texte": "🟢 [rebond] <b>Acheter 65,71 $ de WFC (Wells Fargo)</b> (≈ 0,7947 action à ~82,69 $)\n   🛑 Stop de sécurité ~76,38 $ : -7,63 %, soit -5,01 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   🗓️ Prochains résultats trimestriels : 14/01/2027\n   📰 Dernières actus (en anglais) :\n      • 17/11 : <a href=\"https://www.newswire.lk/2026/11/17/why-us-banks-faced-widespread-outages-on-monday/\">Wells Fargo Experiences Service Disruptions Following JPMorgan Chase Software Bug</a>\n      • 17/11 : <a href=\"https://www.morningstar.com/news/marketwatch/2026111725/pick-the-two-sectors-where-earnings-growth-will-accelerate-as-long-as-the-10-year-stays-below-this-key-level-say-strategists\">Wells Fargo Strategists Forecast Deceleration in EPS Growth</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 35,
+      "test": false
+    },
+    {
+      "id": "1118-3",
+      "jour": "2026-11-18",
+      "genre": "achat",
+      "poche": "rebond",
+      "symbole": "MSFT",
+      "montant": 65.71,
+      "prix": 506.239990234375,
+      "atr": 18.795006888253347,
+      "raison": "signal d'entrée de rebond_court",
+      "statut": "en_attente",
+      "texte": "🟢 [rebond] <b>Acheter 65,71 $ de MSFT (Microsoft)</b> (≈ 0,1298 action à ~506,24 $)\n   🛑 Stop de sécurité ~449,85 $ : -11,14 %, soit -7,32 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   🗓️ Prochains résultats trimestriels : 27/01/2027\n   📰 Dernières actus (en anglais) :\n      • 17/11 : <a href=\"https://stockhouse.com/news/newswire/2026/11/17/microsoft-launches-ai-transparency-initiative-with-40-organisations\">Microsoft Launches AI Transparency Initiative</a>\n      • 17/11 : <a href=\"https://www.globenewswire.com/news-release/2026/11/17/3404380/0/en/microsoft-selects-haivision-video-contribution-ecosystem-and-makito-one-video-transport-platform-to-power-global-live-event-productions.html\">Microsoft Commences Ignite 2026 Conference</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 36,
+      "test": false
+    },
+    {
+      "id": "1118-4",
+      "jour": "2026-11-18",
+      "genre": "achat",
+      "poche": "rebond",
+      "symbole": "PFE",
+      "montant": 65.71,
+      "prix": 28.469999313354492,
+      "atr": 0.7638834653628014,
+      "raison": "signal d'entrée de rebond_court",
+      "statut": "en_attente",
+      "texte": "🟢 [rebond] <b>Acheter 65,71 $ de PFE (Pfizer)</b> (≈ 2,308 action à ~28,47 $)\n   🛑 Stop de sécurité ~26,18 $ : -8,04 %, soit -5,29 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   🗓️ Prochains résultats trimestriels : 02/02/2027\n   📰 Dernières actus (en anglais) :\n      • 14/11 : <a href=\"https://be.marketscreener.com/beursnieuws/bedrijven/\">Pfizer GLP-1 Medications Included in China's National Health Insurance</a>\n      • 13/11 : <a href=\"https://www.moomoo.com/hans/news/post/1004594558/pfizer-s-talzenna-gets-positive-eu-opinion-for-hrr-mutated\">Pfizer's Talzenna Receives Positive EU Opinion for HRR-Mutated Prostate Cancer</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 37,
       "test": false
     }
   ]
