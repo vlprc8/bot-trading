@@ -17,14 +17,6 @@
     },
     {
       "poche": "cassure",
-      "symbole": "BRK-B",
-      "qte": 0.114663968,
-      "date_entree": "2026-11-12",
-      "prix_entree": 592.95,
-      "stop": 558.82
-    },
-    {
-      "poche": "cassure",
       "symbole": "KO",
       "qte": 0.692080618,
       "date_entree": "2026-11-12",
@@ -38,41 +30,9 @@
       "date_entree": "2026-11-17",
       "prix_entree": 171.24,
       "stop": 160.9
-    },
-    {
-      "poche": "rebond",
-      "symbole": "AMZN",
-      "qte": 0.255424024,
-      "date_entree": "2026-11-17",
-      "prix_entree": 257.65,
-      "stop": 224.56
     }
   ],
   "ordres": [
-    {
-      "id": "e81a9854-f52e-4b20-880e-d76d086b7d64",
-      "poche": "cassure",
-      "symbole": "BRK-B",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.114663968,
-      "montant": null,
-      "atr": null,
-      "raison": "signal de sortie de cassure_courte",
-      "date": "2026-11-19"
-    },
-    {
-      "id": "abc249ad-d981-476c-9ea3-af0ef52c011c",
-      "poche": "rebond",
-      "symbole": "AMZN",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.255424024,
-      "montant": null,
-      "atr": null,
-      "raison": "signal de sortie de rebond_court",
-      "date": "2026-11-19"
-    },
     {
       "id": "36e809ce-661b-4b6a-8126-ba05ed9927d7",
       "poche": "cassure",
@@ -297,7 +257,7 @@
       "prix": 122.36000061035156,
       "atr": 3.2935714721679688,
       "raison": "signal d'entrée de cassure_courte",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [cassure] <b>Acheter 67,70 $ de DIS (Walt Disney Company (The))</b> (≈ 0,5533 action à ~122,36 $)\n   🛑 Stop de sécurité ~112,48 $ : -8,07 %, soit -5,47 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,70 $), quand ça perd -3,22 % (≈ -2,18 $) ; durée moyenne 6,8 jours\n   🗓️ Prochains résultats trimestriels : 01/02/2027\n   📰 Dernières actus (en anglais) :\n      • 19/11 : <a href=\"https://www.moomoo.com/stock/DIS-US?chain_id=Name1K9-3FXPhg.1lfsbfg&amp;global_content=%7B%22promote_id%22%3A%22%22%2C%22sub_promote_id%22%3A64%2C%22subpromote_id%22%3A%22%22%2C%22f%22%3A%22www.moomoo.com%2Fcommunity%2Fprofile%2Fmoomoo-breakfast-us-77777014%22%7D\">Disney Executive Robert A. Iger Files Intent to Sell Shares</a>\n      • 18/11 : <a href=\"https://www.moomoo.com/stock/DIS-US?chain_id=Name1K9-3FXPhg.1lfris0&amp;global_content=%7B%22promote_id%22%3A%22%22%2C%22sub_promote_id%22%3A64%2C%22subpromote_id%22%3A%22%22%2C%22f%22%3A%22www.moomoo.com%2Fcommunity%2Fprofile%2Fcow-moo-ney-102780363%22%7D\">Disney CEO Discusses Netflix Licensing and AI Efficiency Gains</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 41,
       "test": false
@@ -312,7 +272,7 @@
       "prix": 137.77999877929688,
       "atr": 4.164998735700335,
       "raison": "signal d'entrée de rebond_court",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [rebond] <b>Acheter 65,71 $ de MRK (Merck & Co.)</b> (≈ 0,4769 action à ~137,78 $)\n   🛑 Stop de sécurité ~125,29 $ : -9,07 %, soit -5,96 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   📰 Dernières actus (en anglais) :\n      • 18/11 : <a href=\"https://www.businesswire.com/newsroom/industry/health/pharmaceutical\">Thomas H. Glocer to Retire From Merck Board of Directors in May 2027; Douglas M. Baker, Jr. Appointed Independent Lead Director</a>\n      • 18/11 : <a href=\"https://www.fidelity.com/news/article/default/202611180645BIZWIRE_USPR_____20261118_BW535937\">Thomas H. Glocer to Retire from Merck Board; Douglas M. Baker, Jr. Appointed Independent Lead Director</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 42,
       "test": false
@@ -327,7 +287,7 @@
       "prix": 286.010009765625,
       "atr": 7.441425868443081,
       "raison": "signal d'entrée de rebond_court",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [rebond] <b>Acheter 65,71 $ de ABBV (AbbVie)</b> (≈ 0,2297 action à ~286,01 $)\n   🛑 Stop de sécurité ~263,69 $ : -7,80 %, soit -5,13 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   📰 Dernières actus (en anglais) :\n      • 17/11 : <a href=\"https://www.einpresswire.com/article/957271987/nyfhealth-winners-announced-eversana-intouch-and-leo-singapore-earn-grand-awards-klick-health-is-agency-of-the-year\">EVERSANA INTOUCH Wins 2026 Pharma Grand Award for AbbVie Campaign</a>\n      • 16/11 : <a href=\"https://www.marketscreener.com/news/barclays-adjusts-price-target-on-abbvie-to-335-from-325-ce785edfd98ef623\">Barclays Adjusts Price Target on AbbVie to $335</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 43,
       "test": false
@@ -342,7 +302,7 @@
       "prix": 28.059999465942383,
       "atr": 0.7510625867538769,
       "raison": "signal d'entrée de rebond_court",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [rebond] <b>Acheter 65,71 $ de PFE (Pfizer)</b> (≈ 2,3418 action à ~28,06 $)\n   🛑 Stop de sécurité ~25,81 $ : -8,02 %, soit -5,27 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   🗓️ Prochains résultats trimestriels : 02/02/2027\n   📰 Dernières actus (en anglais) :\n      • 18/11 : <a href=\"https://www.businesswire.com/newsroom/industry/health/pharmaceutical\">Pfizer Enters into Exclusive Licensing Agreement with Starna Therapeutics for Autoimmune Diseases</a>\n      • 14/11 : <a href=\"https://be.marketscreener.com/beursnieuws/bedrijven/\">Pfizer GLP-1 Medications Included in China's National Health Insurance</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 44,
       "test": false
@@ -357,7 +317,7 @@
       "prix": 337.6400146484375,
       "atr": 10.418568202427455,
       "raison": "signal d'entrée de rebond_court",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [rebond] <b>Acheter 65,71 $ de HD (Home Depot (The))</b> (≈ 0,1946 action à ~337,64 $)\n   🛑 Stop de sécurité ~306,38 $ : -9,26 %, soit -6,08 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   📰 Dernières actus (en anglais) :\n      • 18/11 : <a href=\"https://www.marketscreener.com/news/ubs-adjusts-price-target-on-home-depot-to-417-from-420-keeps-buy-rating-ce785eddda8af32d\">UBS Adjusts Price Target on Home Depot to $417 From $420</a>\n      • 18/11 : <a href=\"https://www.marketscreener.com/news/bernstein-adjusts-price-target-on-home-depot-to-360-from-357-ce785eddd98fff24\">Analysts Adjust Price Targets for The Home Depot Following Quarterly Results</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 45,
       "test": false
@@ -372,7 +332,7 @@
       "prix": 324.1099853515625,
       "atr": 8.499997820172991,
       "raison": "signal d'entrée de rebond_court",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [rebond] <b>Acheter 65,71 $ de JPM (JPMorgan Chase)</b> (≈ 0,2027 action à ~324,11 $)\n   🛑 Stop de sécurité ~298,61 $ : -7,87 %, soit -5,17 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   🗓️ Prochains résultats trimestriels : 14/01/2027\n   📰 Dernières actus (en anglais) :\n      • 18/11 : <a href=\"https://www.moomoo.com/stock/JPM-US?chain_id=Name1K9-3FXPhg.1lfrpt0&amp;global_content=%7B%22promote_id%22%3A%22%22%2C%22sub_promote_id%22%3A64%2C%22subpromote_id%22%3A%22%22%2C%22f%22%3A%22www.moomoo.com%2Fcommunity%2Fprofile%2Fbuy-low-sell-low-107785341%22%7D\">JPMorgan-led Banks Reduce Yield on Proofpoint Bond</a>\n      • 18/11 : <a href=\"https://www.fidelity.com/news/article/company-news/202611180923MIDNIGHTUSEQUITY_A3756531\">Wells Fargo to Name JPMorgan Executive Allison Beer as COO</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 46,
       "test": false

@@ -2,3 +2,5 @@ date_sortie,poche,symbole,qte,date_entree,prix_entree,prix_sortie,pnl,rendement,
 2026-11-12,test,AAPL,0.01407,2026-11-11,354.652,358.22,0.05,0.01006,fin du test
 2026-11-17,cassure,GE,0.200035,2026-11-12,339.89,324.2,-3.14,-0.04616,signal de sortie de cassure_courte
 2026-11-18,cassure,VZ,1.446596,2026-11-12,47.0,45.32,-2.43,-0.03574,signal de sortie de cassure_courte
+2026-11-19,rebond,AMZN,0.255424,2026-11-17,257.65,272.51,3.8,0.05768,signal de sortie de rebond_court
+2026-11-19,cassure,BRK-B,0.114664,2026-11-12,592.95,571.13,-2.5,-0.0368,signal de sortie de cassure_courte
