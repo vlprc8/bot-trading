@@ -56,22 +56,9 @@
       "stop": 120.9
     }
   ],
-  "ordres": [
-    {
-      "id": "d344d04c-7a8f-4ff3-ab0a-59640d971e7c",
-      "poche": "cassure",
-      "symbole": "COST",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.062034105,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-20"
-    }
-  ],
+  "ordres": [],
   "dernier_matin": "2026-11-20",
-  "dernier_soir": "2026-11-19",
+  "dernier_soir": "2026-11-20",
   "propositions": [
     {
       "id": "1111-1",
