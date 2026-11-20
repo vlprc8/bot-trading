@@ -16,47 +16,47 @@
       "stop": 1030.5
     },
     {
-      "poche": "cassure",
-      "symbole": "KO",
-      "qte": 0.692080618,
-      "date_entree": "2026-11-12",
-      "prix_entree": 98.24,
-      "stop": 92.42
+      "poche": "rebond",
+      "symbole": "JNJ",
+      "qte": 0.242639443,
+      "date_entree": "2026-11-20",
+      "prix_entree": 270.36,
+      "stop": 249.32
     },
     {
-      "poche": "cassure",
-      "symbole": "PG",
-      "qte": 0.395935529,
-      "date_entree": "2026-11-17",
-      "prix_entree": 171.24,
-      "stop": 160.9
+      "poche": "rebond",
+      "symbole": "HD",
+      "qte": 0.192133087,
+      "date_entree": "2026-11-20",
+      "prix_entree": 341.43,
+      "stop": 309.87
+    },
+    {
+      "poche": "rebond",
+      "symbole": "PFE",
+      "qte": 2.358015815,
+      "date_entree": "2026-11-20",
+      "prix_entree": 27.82,
+      "stop": 25.59
+    },
+    {
+      "poche": "rebond",
+      "symbole": "ABBV",
+      "qte": 0.228539576,
+      "date_entree": "2026-11-20",
+      "prix_entree": 287.04,
+      "stop": 265.1
+    },
+    {
+      "poche": "rebond",
+      "symbole": "MRK",
+      "qte": 0.489588775,
+      "date_entree": "2026-11-20",
+      "prix_entree": 133.99,
+      "stop": 120.9
     }
   ],
   "ordres": [
-    {
-      "id": "28d33765-04a0-4ded-8a07-f72a7f16ca42",
-      "poche": "cassure",
-      "symbole": "KO",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.692080618,
-      "montant": null,
-      "atr": null,
-      "raison": "signal de sortie de cassure_courte",
-      "date": "2026-11-20"
-    },
-    {
-      "id": "51a4e3c3-8019-40b4-a461-e410c429994e",
-      "poche": "cassure",
-      "symbole": "PG",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.395935529,
-      "montant": null,
-      "atr": null,
-      "raison": "signal de sortie de cassure_courte",
-      "date": "2026-11-20"
-    },
     {
       "id": "d344d04c-7a8f-4ff3-ab0a-59640d971e7c",
       "poche": "cassure",
@@ -67,66 +67,6 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-20"
-    },
-    {
-      "id": "1512ee89-d205-40a9-867e-dbc858bbe1ca",
-      "poche": "rebond",
-      "symbole": "JNJ",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 65.61,
-      "atr": 7.014288766043527,
-      "raison": "signal d'entrée de rebond_court",
-      "date": "2026-11-20"
-    },
-    {
-      "id": "7ebd71f7-376a-4660-8728-0c04049dc44f",
-      "poche": "rebond",
-      "symbole": "HD",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 65.61,
-      "atr": 10.518569946289062,
-      "raison": "signal d'entrée de rebond_court",
-      "date": "2026-11-20"
-    },
-    {
-      "id": "9c47d8c8-ff65-495c-9d74-0ebada215664",
-      "poche": "rebond",
-      "symbole": "ABBV",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 65.61,
-      "atr": 7.314283098493304,
-      "raison": "signal d'entrée de rebond_court",
-      "date": "2026-11-20"
-    },
-    {
-      "id": "d46460c9-701a-4d9f-9b53-8ad21d3e4a29",
-      "poche": "rebond",
-      "symbole": "PFE",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 65.61,
-      "atr": 0.7446597182410587,
-      "raison": "signal d'entrée de rebond_court",
-      "date": "2026-11-20"
-    },
-    {
-      "id": "3fad5161-e249-49c8-8d90-c6d2f798890d",
-      "poche": "rebond",
-      "symbole": "MRK",
-      "cote": "buy",
-      "genre": "achat",
-      "qte": null,
-      "montant": 65.61,
-      "atr": 4.364283970424107,
-      "raison": "signal d'entrée de rebond_court",
       "date": "2026-11-20"
     }
   ],
