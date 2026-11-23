@@ -56,8 +56,81 @@
       "stop": 120.9
     }
   ],
-  "ordres": [],
-  "dernier_matin": "2026-11-20",
+  "ordres": [
+    {
+      "id": "fe354941-848b-41a7-8110-a9c30da9957a",
+      "poche": "cassure",
+      "symbole": "COST",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.062034105,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-23"
+    },
+    {
+      "id": "b5190814-afbe-48c6-8edd-960fb9a588e5",
+      "poche": "rebond",
+      "symbole": "JNJ",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.242639443,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-23"
+    },
+    {
+      "id": "8cf640b1-eb73-474a-bd95-c9491f1e6d90",
+      "poche": "rebond",
+      "symbole": "HD",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.192133087,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-23"
+    },
+    {
+      "id": "b80b7d08-056d-4348-9e9a-a47e0b70a485",
+      "poche": "rebond",
+      "symbole": "PFE",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 2.358015815,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-23"
+    },
+    {
+      "id": "f1f773ef-f50b-4f75-a0e8-084859cc7a8d",
+      "poche": "rebond",
+      "symbole": "ABBV",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.228539576,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-23"
+    },
+    {
+      "id": "e8202333-5f81-4b54-974b-28afae6280e5",
+      "poche": "rebond",
+      "symbole": "MRK",
+      "cote": "sell",
+      "genre": "stop",
+      "qte": 0.489588775,
+      "montant": null,
+      "atr": null,
+      "raison": "stop de sécurité",
+      "date": "2026-11-23"
+    }
+  ],
+  "dernier_matin": "2026-11-23",
   "dernier_soir": "2026-11-20",
   "propositions": [
     {
