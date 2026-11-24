@@ -58,7 +58,31 @@
   ],
   "ordres": [
     {
-      "id": "fe354941-848b-41a7-8110-a9c30da9957a",
+      "id": "c2ef4552-091f-4ca6-8f95-52e48722f82a",
+      "poche": "rebond",
+      "symbole": "HD",
+      "cote": "sell",
+      "genre": "vente",
+      "qte": 0.192133087,
+      "montant": null,
+      "atr": null,
+      "raison": "signal de sortie de rebond_court",
+      "date": "2026-11-24"
+    },
+    {
+      "id": "46d68db2-fb36-4883-b706-59145c7b8ee7",
+      "poche": "rebond",
+      "symbole": "ABBV",
+      "cote": "sell",
+      "genre": "vente",
+      "qte": 0.228539576,
+      "montant": null,
+      "atr": null,
+      "raison": "signal de sortie de rebond_court",
+      "date": "2026-11-24"
+    },
+    {
+      "id": "d8ebaaf4-76a6-472f-87fc-6bcff0f227b4",
       "poche": "cassure",
       "symbole": "COST",
       "cote": "sell",
@@ -67,10 +91,10 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-23"
+      "date": "2026-11-24"
     },
     {
-      "id": "b5190814-afbe-48c6-8edd-960fb9a588e5",
+      "id": "cd8aadf3-395e-41d9-8590-31336147e9da",
       "poche": "rebond",
       "symbole": "JNJ",
       "cote": "sell",
@@ -79,22 +103,10 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-23"
+      "date": "2026-11-24"
     },
     {
-      "id": "8cf640b1-eb73-474a-bd95-c9491f1e6d90",
-      "poche": "rebond",
-      "symbole": "HD",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.192133087,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-23"
-    },
-    {
-      "id": "b80b7d08-056d-4348-9e9a-a47e0b70a485",
+      "id": "18b6ffcb-9102-4306-a541-cc533a1931e6",
       "poche": "rebond",
       "symbole": "PFE",
       "cote": "sell",
@@ -103,22 +115,10 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-23"
+      "date": "2026-11-24"
     },
     {
-      "id": "f1f773ef-f50b-4f75-a0e8-084859cc7a8d",
-      "poche": "rebond",
-      "symbole": "ABBV",
-      "cote": "sell",
-      "genre": "stop",
-      "qte": 0.228539576,
-      "montant": null,
-      "atr": null,
-      "raison": "stop de sécurité",
-      "date": "2026-11-23"
-    },
-    {
-      "id": "e8202333-5f81-4b54-974b-28afae6280e5",
+      "id": "a2540562-964b-4cc6-bd13-cfa11988cda6",
       "poche": "rebond",
       "symbole": "MRK",
       "cote": "sell",
@@ -127,10 +127,10 @@
       "montant": null,
       "atr": null,
       "raison": "stop de sécurité",
-      "date": "2026-11-23"
+      "date": "2026-11-24"
     }
   ],
-  "dernier_matin": "2026-11-23",
+  "dernier_matin": "2026-11-24",
   "dernier_soir": "2026-11-23",
   "propositions": [
     {
@@ -470,6 +470,21 @@
       "statut": "acceptee",
       "texte": "🟢 [rebond] <b>Acheter 65,61 $ de JNJ (Johnson & Johnson)</b> (≈ 0,2456 action à ~267,14 $)\n   🛑 Stop de sécurité ~246,10 $ : -7,88 %, soit -5,17 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture au-dessus de sa moyenne 5 jours, ou au bout de 5 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1777 trades) : 60 % gagnants ; quand ça gagne +2,12 % (≈ +1,39 $), quand ça perd -3,00 % (≈ -1,97 $) ; durée moyenne 3,2 jours\n   🗓️ Prochains résultats trimestriels : 26/01/2027\n   📰 Dernières actus (en anglais) :\n      • 19/11 : <a href=\"https://www.marketscreener.com/news/johnson-johnson-says-houston-hospital-will-be-first-to-install-robotic-surgical-system-ce785ed2da8af622\">Johnson &amp; Johnson Announces First Installation of New Robotic Surgical System</a>\n      • 19/11 : <a href=\"https://www.prnewswire.com/news-releases/johnson--johnson-seeks-us-fda-approval-for-caplyta-in-bipolar-mania-marking-fifth-potential-indication-302945475.html\">Johnson &amp; Johnson Submits sNDA for Caplyta in Bipolar Mania</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 55,
+      "test": false
+    },
+    {
+      "id": "1124-1",
+      "jour": "2026-11-24",
+      "genre": "achat",
+      "poche": "cassure",
+      "symbole": "WMT",
+      "montant": 67.61,
+      "prix": 129.5800018310547,
+      "atr": 3.2200023106166293,
+      "raison": "signal d'entrée de cassure_courte",
+      "statut": "en_attente",
+      "texte": "🟢 [cassure] <b>Acheter 67,61 $ de WMT (Walmart)</b> (≈ 0,5218 action à ~129,58 $)\n   🛑 Stop de sécurité ~119,92 $ : -7,45 %, soit -5,04 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,69 $), quand ça perd -3,22 % (≈ -2,18 $) ; durée moyenne 6,8 jours\n   🗓️ Prochains résultats trimestriels : 18/02/2027\n   📰 Dernières actus (en anglais) :\n      • 24/11 : <a href=\"https://www.marketscreener.com/news/walmart-insider-sold-shares-worth-361-720-according-to-a-recent-sec-filing-ce7851dadf8bf42c\">Walmart Insider Executes Share Sale</a>\n      • 23/11 : <a href=\"https://www.globenewswire.com/news-release/2026/11/23/3408582/0/en/mersco-joins-walmart-s-hardlines-category-exchange-exploring-opportunities-in-backyard-play-expansion-and-peak-season-strategy.html\">Walmart Hosts Global E-commerce Hardlines Category Exchange</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
+      "message_id": 64,
       "test": false
     }
   ]
