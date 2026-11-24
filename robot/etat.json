@@ -25,27 +25,11 @@
     },
     {
       "poche": "rebond",
-      "symbole": "HD",
-      "qte": 0.192133087,
-      "date_entree": "2026-11-20",
-      "prix_entree": 341.43,
-      "stop": 309.87
-    },
-    {
-      "poche": "rebond",
       "symbole": "PFE",
       "qte": 2.358015815,
       "date_entree": "2026-11-20",
       "prix_entree": 27.82,
       "stop": 25.59
-    },
-    {
-      "poche": "rebond",
-      "symbole": "ABBV",
-      "qte": 0.228539576,
-      "date_entree": "2026-11-20",
-      "prix_entree": 287.04,
-      "stop": 265.1
     },
     {
       "poche": "rebond",
@@ -57,30 +41,6 @@
     }
   ],
   "ordres": [
-    {
-      "id": "c2ef4552-091f-4ca6-8f95-52e48722f82a",
-      "poche": "rebond",
-      "symbole": "HD",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.192133087,
-      "montant": null,
-      "atr": null,
-      "raison": "signal de sortie de rebond_court",
-      "date": "2026-11-24"
-    },
-    {
-      "id": "46d68db2-fb36-4883-b706-59145c7b8ee7",
-      "poche": "rebond",
-      "symbole": "ABBV",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.228539576,
-      "montant": null,
-      "atr": null,
-      "raison": "signal de sortie de rebond_court",
-      "date": "2026-11-24"
-    },
     {
       "id": "d8ebaaf4-76a6-472f-87fc-6bcff0f227b4",
       "poche": "cassure",
@@ -131,7 +91,7 @@
     }
   ],
   "dernier_matin": "2026-11-24",
-  "dernier_soir": "2026-11-23",
+  "dernier_soir": "2026-11-24",
   "propositions": [
     {
       "id": "1111-1",
@@ -482,7 +442,7 @@
       "prix": 129.5800018310547,
       "atr": 3.2200023106166293,
       "raison": "signal d'entrée de cassure_courte",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [cassure] <b>Acheter 67,61 $ de WMT (Walmart)</b> (≈ 0,5218 action à ~129,58 $)\n   🛑 Stop de sécurité ~119,92 $ : -7,45 %, soit -5,04 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,69 $), quand ça perd -3,22 % (≈ -2,18 $) ; durée moyenne 6,8 jours\n   🗓️ Prochains résultats trimestriels : 18/02/2027\n   📰 Dernières actus (en anglais) :\n      • 24/11 : <a href=\"https://www.marketscreener.com/news/walmart-insider-sold-shares-worth-361-720-according-to-a-recent-sec-filing-ce7851dadf8bf42c\">Walmart Insider Executes Share Sale</a>\n      • 23/11 : <a href=\"https://www.globenewswire.com/news-release/2026/11/23/3408582/0/en/mersco-joins-walmart-s-hardlines-category-exchange-exploring-opportunities-in-backyard-play-expansion-and-peak-season-strategy.html\">Walmart Hosts Global E-commerce Hardlines Category Exchange</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 64,
       "test": false
