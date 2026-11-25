@@ -8,3 +8,6 @@ date_sortie,poche,symbole,qte,date_entree,prix_entree,prix_sortie,pnl,rendement,
 2026-11-20,cassure,PG,0.395936,2026-11-17,171.24,170.66,-0.23,-0.00339,signal de sortie de cassure_courte
 2026-11-24,rebond,HD,0.192133,2026-11-20,341.43,344.99,0.68,0.01043,signal de sortie de rebond_court
 2026-11-24,rebond,ABBV,0.22854,2026-11-20,287.04,290.6,0.81,0.0124,signal de sortie de rebond_court
+2026-11-25,rebond,JNJ,0.242639,2026-11-20,270.36,278.32,1.93,0.02944,signal de sortie de rebond_court
+2026-11-25,rebond,MRK,0.489589,2026-11-20,133.99,142.24,4.04,0.06157,signal de sortie de rebond_court
+2026-11-25,rebond,PFE,2.358016,2026-11-20,27.82,28.4339,1.45,0.02207,signal de sortie de rebond_court
