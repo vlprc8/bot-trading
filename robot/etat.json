@@ -9,14 +9,6 @@
   "positions": [
     {
       "poche": "cassure",
-      "symbole": "COST",
-      "qte": 0.062034105,
-      "date_entree": "2026-11-12",
-      "prix_entree": 1096.01,
-      "stop": 1030.5
-    },
-    {
-      "poche": "cassure",
       "symbole": "VZ",
       "qte": 1.437052631,
       "date_entree": "2026-11-25",
@@ -49,18 +41,6 @@
     }
   ],
   "ordres": [
-    {
-      "id": "1ab85e89-68b7-448c-895e-738c0f683f4c",
-      "poche": "cassure",
-      "symbole": "COST",
-      "cote": "sell",
-      "genre": "vente",
-      "qte": 0.062034105,
-      "montant": null,
-      "atr": null,
-      "raison": "durée max atteinte (10 séances)",
-      "date": "2026-11-27"
-    },
     {
       "id": "52dc96f9-230e-4e05-94e5-9a0394044c5c",
       "poche": "cassure",
@@ -111,7 +91,7 @@
     }
   ],
   "dernier_matin": "2026-11-27",
-  "dernier_soir": "2026-11-25",
+  "dernier_soir": "2026-11-27",
   "propositions": [
     {
       "id": "1111-1",
@@ -537,7 +517,7 @@
       "prix": 361.260009765625,
       "atr": 9.449996948242188,
       "raison": "signal d'entrée de cassure_courte",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [cassure] <b>Acheter 68,21 $ de HD (Home Depot (The))</b> (≈ 0,1888 action à ~361,26 $)\n   🛑 Stop de sécurité ~332,91 $ : -7,85 %, soit -5,35 $ au pire au prix du stop\n   🚪 Sortie prévue : dès que le cours clôture sous son plus bas des 5 séances précédentes, ou au bout de 10 séances\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (1265 trades) : 41 % gagnants ; quand ça gagne +5,46 % (≈ +3,72 $), quand ça perd -3,22 % (≈ -2,20 $) ; durée moyenne 6,8 jours\n   🗓️ Prochains résultats trimestriels : 23/02/2027\n   📰 Dernières actus (en anglais) :\n      • 26/11 : <a href=\"https://www.marketscreener.com/news/home-depot-insider-sold-shares-worth-4-312-400-according-to-a-recent-sec-filing-ce7851d8da80f023\">Home Depot Insider Executes Sale of Company Shares</a>\n      • 25/11 : <a href=\"https://ch.marketscreener.com/boerse-nachrichten/home-depot-insiderin-verkaufte-aktien-im-wert-von-1-040-040-usd-wie-aus-einer-aktuellen-sec-meldung-ce7851d8da80ff23\">Home Depot Insider Executes Share Sale</a>\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 77,
       "test": false
@@ -552,7 +532,7 @@
       "prix": 716.7000122070312,
       "atr": 16.880000523158483,
       "raison": "avant-dernière séance du mois : début du tournant du mois",
-      "statut": "en_attente",
+      "statut": "expiree",
       "texte": "🟢 [tournant] <b>Acheter 331,00 $ de SPY (fonds S&P 500 : les 500 plus grandes entreprises US)</b> (≈ 0,4618 action à ~716,70 $)\n   🛑 Stop de sécurité ~666,06 $ : -7,07 %, soit -23,39 $ au pire au prix du stop\n   🚪 Sortie prévue : à l'ouverture de la 4e séance du mois prochain\n   📈 Si elle monte fort en séance (+10 %, +15 %, +20 %, +30 %), je te demande si tu veux vendre\n   📊 Historique 2019-2026 (95 trades) : 64 % gagnants ; quand ça gagne +1,48 % (≈ +4,90 $), quand ça perd -1,98 % (≈ -6,55 $) ; durée moyenne 4,7 jours\n\n<b>Je passe cet achat ?</b> Réponds avant l'ouverture (15h30).",
       "message_id": 78,
       "test": false

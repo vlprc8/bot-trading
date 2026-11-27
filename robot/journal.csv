@@ -11,3 +11,4 @@ date_sortie,poche,symbole,qte,date_entree,prix_entree,prix_sortie,pnl,rendement,
 2026-11-25,rebond,JNJ,0.242639,2026-11-20,270.36,278.32,1.93,0.02944,signal de sortie de rebond_court
 2026-11-25,rebond,MRK,0.489589,2026-11-20,133.99,142.24,4.04,0.06157,signal de sortie de rebond_court
 2026-11-25,rebond,PFE,2.358016,2026-11-20,27.82,28.4339,1.45,0.02207,signal de sortie de rebond_court
+2026-11-27,cassure,COST,0.062034,2026-11-12,1096.01,1086.94,-0.56,-0.00828,durée max atteinte (10 séances)
